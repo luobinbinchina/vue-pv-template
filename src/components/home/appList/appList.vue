@@ -33,8 +33,14 @@
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          <el-button
+            size="mini"
+            @click="handleGroup">新增</el-button>
         </template>
       </el-table-column>
+      <el-button
+        size="mini"
+        @click="handleGroup">新增</el-button>
     </el-table>
   </div>
 </template>
@@ -42,6 +48,7 @@
   @import "./appList.scss";
 </style>
 <script type="text/babel">
+  import $ from '../../../assets/js/jquery'
   export default{
     data() {
       return {
@@ -49,27 +56,33 @@
           date: '2016-05-02',
           name: '王小虎',
           address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1517 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1519 弄'
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1516 弄'
         }]
       }
     },
      methods: {
       handleEdit(index, row) {
-        console.log(index, row);
+        // console.log(index, row);
       },
       handleDelete(index, row) {
-        console.log(index, row);
+        // console.log(index, row);
+      },
+      handleGroup() {
+        // console.log('come')
+        var params = {
+          "appGroupName": 'tel',
+          "operatorId": 12345
+        }
+        $.ajax({
+                type: 'post',
+                url: 'http://10.179.100.222:8887/opensds/appgroup/add',
+                data: params,
+                success: function success(res) {
+                    // console.log(res)
+                },
+                error: function error(res) {
+                    if (typeof _error === 'function') _error(res);
+                }
+            });
       }
     }
   }

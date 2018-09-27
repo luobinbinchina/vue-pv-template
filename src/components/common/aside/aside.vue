@@ -1,8 +1,8 @@
 <template>
   <div class="aside">
     <div class="logo">
-      <!-- <span>RobinAdmin</span> -->
-      <span class="img-span"><img :class="logoClass" src="https://pt-starimg.didistatic.com/static/starimg/img/EMF2V9ewhbmFdpSQgxI.png" alt=""></span>
+      <span>OpenSds</span>
+      <!-- <span class="img-span"><img class="logo-class" src="https://pt-starimg.didistatic.com/static/starimg/img/kd09dBTlVw5uaosvhLS.png"></span> -->
     </div>
     <el-menu
       default-active="2"
