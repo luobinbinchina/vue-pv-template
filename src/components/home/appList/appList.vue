@@ -48,7 +48,8 @@
   @import "./appList.scss";
 </style>
 <script type="text/babel">
-  import $ from '../../../assets/js/jquery'
+  import API from '../../../api/api'
+
   export default{
     data() {
       return {
@@ -59,7 +60,10 @@
         }]
       }
     },
-     methods: {
+    mounted() {
+      API.testGet()
+    },
+    methods: {
       handleEdit(index, row) {
         // console.log(index, row);
       },
@@ -67,22 +71,7 @@
         // console.log(index, row);
       },
       handleGroup() {
-        // console.log('come')
-        var params = {
-          "appGroupName": 'tel',
-          "operatorId": 12345
-        }
-        $.ajax({
-                type: 'post',
-                url: 'http://10.179.100.222:8887/opensds/appgroup/add',
-                data: params,
-                success: function success(res) {
-                    // console.log(res)
-                },
-                error: function error(res) {
-                    if (typeof _error === 'function') _error(res);
-                }
-            });
+       
       }
     }
   }
