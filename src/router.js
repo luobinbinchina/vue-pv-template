@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-
+import ApplicationGroup from './views/ApplicationGroup.vue'
+import ApplyName from './views/ApplyName.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -22,9 +23,14 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
     },
     {
-      path: '/',
-      name: 'home',
-      component: Home
+      path: '/applicationGroup',
+      name: 'applicationGroup',
+      component: ApplicationGroup
+    },
+    {
+      path: '/applyName',
+      name: 'applyName',
+      component: ApplyName
     }
   ]
 })

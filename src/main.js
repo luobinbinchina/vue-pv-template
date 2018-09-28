@@ -5,7 +5,8 @@ import echarts from 'echarts'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import $ from './assets/js/jquery'
+import StaUI from '@kd/starui'
+import '@kd/starui/build/theme-didi/index.css'
 
 window.eventHub = new Vue();
 
