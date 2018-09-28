@@ -76,6 +76,7 @@
 </style>
 
 <script>
+  import  Api from '../api/api'
   let mockTableData = [{
     applicationGroupName: '青桔',
     operatorTime: '2016-05-02',
@@ -140,7 +141,11 @@
 
       },
       addApplicationGroup() {
-
+        let params = {
+          "appGroupName": "apply",
+          "operatorId": 1
+        }
+        Api.get('/opensds/appgroup/add', params)
       },
       doSearch() {
 
