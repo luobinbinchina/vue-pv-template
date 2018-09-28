@@ -11,6 +11,7 @@ import '@kd/starui/build/theme-didi/index.css'
 window.eventHub = new Vue();
 
 Vue.use(ElementUI);
+// Vue.use(StaUI);
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts
 

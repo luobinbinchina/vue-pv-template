@@ -9,12 +9,12 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@kd/starui": "^1.2.28",
     "echarts": "^4.2.0-rc.1",
     "element-ui": "^2.4.7",
-    "@kd/starui": "^1.0.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"  
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.1",

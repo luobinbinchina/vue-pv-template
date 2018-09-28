@@ -49,17 +49,17 @@
         }
       ],
       index: 1,
-      total: 10,
+      total: 100,
       pageSize: 10,
       param1: ''
       }
     },
     methods: {
       doSearch: function() {
-        console.log(111)
+
       },
       doDelete: function(a) {
-        console.log(222)
+
       }
     }
   }
