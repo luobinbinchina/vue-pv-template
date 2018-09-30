@@ -149,6 +149,7 @@
 </style>
 
 <script>
+/* eslint-disable */
   import Api from '../api/api'
   import TimeFormat from '../utils/timeFormat'
   let mockTableData = [
