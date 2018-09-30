@@ -57,7 +57,7 @@ export default {
       fetch(url, {
         method: 'POST',
         headers: headers || commonHeader,
-        body: formData,
+        body: JSON.stringify(formData),
       })
         .then((response) => {
           if (response.ok) {

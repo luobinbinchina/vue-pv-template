@@ -1,64 +1,196 @@
 <template>
-  <dd-table :list="list" :index.sync="index" :total="total" :page-size="pageSize">
-   <div slot="search">
+  <div class="apply-name">
+    <div class="apply-name-search">
      <el-form :inline="true">
-       <el-form-item label="审批人">
-         <el-input v-model="param1"  placeholder="审批人"></el-input>
+       <el-form-item label="应用名称">
+         <el-input v-model="form.applyName"  placeholder=""></el-input>
+       </el-form-item>
+       <el-form-item label="应用组">
+         <el-select v-model="form.applyGroup" placeholder="">
+           <el-option label="应用1" value="1"></el-option>
+           <el-option label="应用2" value="2"></el-option>
+         </el-select>
        </el-form-item>
        <el-form-item>
-         <el-button type="primary" @click="doSearch">查询</el-button>
+         <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
+       </el-form-item>
+       <el-form-item>
+         <el-button type="primary" @click="addApply">新增应用</el-button>
+       </el-form-item>
+       <el-form-item>
+         <el-button type="primary" @click="doSearch">查找</el-button>
        </el-form-item>
      </el-form>
-   </div>
-   <el-table-column prop="date" label="日期" width="180"></el-table-column>
-   <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-   <el-table-column prop="address" label="地址" width="300"></el-table-column>
-   <el-table-column label="操作">
-     <template scope="scope">
-       <el-button type="primary" @click="doDelete(scope.row)">删除</el-button>
-     </template>
-   </el-table-column>
- </dd-table>
+    </div>
+    <div class="application-group-table">
+      <el-table
+        :data="tableData"
+        border
+        style="width: 100%">
+        <el-table-column
+          prop="applicationGroupName"
+          label="应用组"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="applyName"
+          label="应用名称"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="usingPolicyGroup"
+          label="当前使用的策略组"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="operatorTime"
+          label="更新时间"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="operatorName"
+          label="操作人">
+        </el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间">
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="application-group-pagination">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="50">
+      </el-pagination>
+    </div>
+  </div>
 </template>
-<style lang="scss">
 
+<style lang="scss">
+  .application-group-pagination {
+    text-align: center;
+    margin-top: 10px;
+  }
+  .el-pagination.is-background .el-pager li:not(.disabled).active {
+    border: none;
+  }
+  .el-table--enable-row-transition .el-table__body td {
+    text-align: center;
+  }
+  .el-table tr th {
+    text-align: center;
+  }
 </style>
+
 <script>
+  import Api from '../api/api'
+  let mockTableData = [
+    {
+      applicationGroupName: '青桔',
+      applyName: 'apply1',
+      usingPolicyGroup: 'group1',
+      operatorTime: '2016-05-02',
+      operatorName: '小明',
+      createTime: '2016-04-02'
+    },
+    {
+      applicationGroupName: '王者荣耀',
+      applyName: 'apply2',
+      usingPolicyGroup: 'group2',
+      operatorTime: '2016-06-02',
+      operatorName: '小彬',
+      createTime: '2016-04-02'
+    },
+    {
+      applicationGroupName: '今日头条',
+      applyName: 'apply3',
+      usingPolicyGroup: 'group3',
+      operatorTime: '2016-07-02',
+      operatorName: '小杨',
+      createTime: '2016-04-02'
+    },
+    {
+      applicationGroupName: '美团外卖',
+      applyName: 'apply4',
+      usingPolicyGroup: 'group4',
+      operatorTime: '2016-08-02',
+      operatorName: '小小',
+      createTime: '2016-06-02'
+    },
+    {
+      applicationGroupName: '青桔',
+      applyName: 'apply5',
+      usingPolicyGroup: 'group5',
+      operatorTime: '2016-05-02',
+      operatorName: '小明',
+      createTime: '2016-04-02'
+    },
+    {
+      applicationGroupName: '王者荣耀',
+      applyName: 'apply6',
+      usingPolicyGroup: 'group6',
+      operatorTime: '2016-06-02',
+      operatorName: '小彬',
+      createTime: '2016-04-02'
+    },
+    {
+      applicationGroupName: '今日头条',
+      applyName: 'apply7',
+      usingPolicyGroup: 'group7',
+      operatorTime: '2016-07-02',
+      operatorName: '小杨',
+      createTime: '2016-04-02'
+    },
+    {
+      applicationGroupName: '美团外卖',
+      applyName: 'apply8',
+      usingPolicyGroup: 'group8',
+      operatorTime: '2016-08-02',
+      operatorName: '小小',
+      createTime: '2016-06-02'
+    }
+  ]
   export default {
     data () {
       return {
-        list: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
+        applicationGroup: "",
+        tableData: mockTableData,
+        form: {
+          applyName: '',
+          applyGroup: ''
         }
-      ],
-      index: 1,
-      total: 100,
-      pageSize: 10,
-      param1: ''
       }
     },
     methods: {
-      doSearch: function() {
+      handleEdit() {
 
       },
-      doDelete: function(a) {
+      handleDelete() {
+
+      },
+      addApplicationGroup() {
+        let params = {
+          "appGroupName": "applyOne",
+          "operatorId": 1
+        }
+        Api.appgroupAdd(params)
+      },
+      addApply() {
+
+      },
+      doSearch() {
 
       }
     }
