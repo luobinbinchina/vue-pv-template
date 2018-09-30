@@ -53,7 +53,6 @@
       <el-pagination
         background
         layout="prev, next"
-        @current-change="currentChangeData"
         >
       </el-pagination>
     </div>
@@ -151,6 +150,7 @@
 
 <script>
   import Api from '../api/api'
+  import TimeFormat from '../utils/timeFormat'
   let mockTableData = [
     {
       applicationGroupName: '青桔',
@@ -225,14 +225,6 @@
       createTime: '2016-06-02'
     }
   ]
-  let timeFormat = function(time) {
-      let _time = new Date(+time)
-      let timeMonth = (_time.getMonth() + 1) > 9 ? (_time.getMonth() + 1) : ('0' + (_time.getMonth() + 1))
-      let timeDate = _time.getDate() > 9 ? _time.getDate() : '0' + _time.getDate()
-      let timeHours = _time.getHours() > 9 ? _time.getHours() : '0' + _time.getHours()
-      let timeMinutes = _time.getMinutes() > 9 ? _time.getMinutes() : '0' + _time.getMinutes()
-      return _time.getFullYear() + '.' + timeMonth + '.' + timeDate + ' ' + timeHours + ':' + timeMinutes
-    }
   export default {
     data () {
       return {
@@ -310,7 +302,11 @@
       currentChangeData(page) {
         let _this = this
         this.appGroupListpage(page).then((res) => {
-          _this.tableData = res.data
+        res.data.forEach(function(item){
+          item.createTime = timeFormat(item.createTime)
+          item.modifiedTime = timeFormat(item.modifiedTime)
+        })
+        _this.tableData = res.data
         }).catch((err) => {
           console.log(222)
         })
@@ -332,6 +328,10 @@
       doSearch() {
         let _this = this
         this.appGroupListpage().then((res) => {
+          res.data.forEach(function(item){
+            item.createTime = TimeFormat.timeFormat(item.createTime)
+            item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
+          })
           _this.tableData = res.data
         }).catch((err) => {
           console.log(222)
