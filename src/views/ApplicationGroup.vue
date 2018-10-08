@@ -53,6 +53,7 @@
       <el-pagination
         background
         layout="prev, next"
+        @current-change="currentChangeData"
         >
       </el-pagination>
     </div>
@@ -88,7 +89,7 @@
         </p>
         <p class="edit-application-group-btn">
           <el-form-item>
-            <el-button type="primary" @click="closeialogEditApplicationGroup">取消</el-button>
+            <el-button type="primary" @click="closedialogEditApplicationGroup">取消</el-button>
             <el-button type="primary" @click="doSubmitEditApplicationGroup">确定</el-button>
           </el-form-item>
         </p>
@@ -98,6 +99,9 @@
 </template>
 
 <style lang="scss">
+  .application-group {
+    min-height: 600px;
+  }
   .application-group .application-group-search .el-form-item {
     margin-right: 25px;
   }
@@ -242,6 +246,7 @@
 
     },
     methods: {
+      //编辑应用组
       doSubmitEditApplicationGroup() {
         let _this = this
         let params = {
@@ -267,14 +272,15 @@
             type: 'warning'
           })
         })
-        this.closeialogEditApplicationGroup() // todo 重新渲染页面
+        this.closedialogEditApplicationGroup() // todo 重新渲染页面
       },
-      closeialogEditApplicationGroup() {
+      closedialogEditApplicationGroup() {
         this.dialogEditApplicationGroup = false
       },
       handleEdit() {
         this.dialogEditApplicationGroup = true
       },
+      //删除应用组
       handleDelete(appGroupName, operatorId) {
         let _this = this
         let params = {
@@ -303,42 +309,63 @@
       currentChangeData(page) {
         let _this = this
         this.appGroupListpage(page).then((res) => {
-        res.data.forEach(function(item){
-          item.createTime = timeFormat(item.createTime)
-          item.modifiedTime = timeFormat(item.modifiedTime)
-        })
-        _this.tableData = res.data
+          if(res.code === 200) {
+            res.data.forEach(function(item){
+              item.createTime = TimeFormat.timeFormat(item.createTime)
+              item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
+            })
+            _this.tableData = res.data
+          } else {
+            _this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
         }).catch((err) => {
-          console.log(222)
+          _this.$message({
+            message: "分页查询应用组失败",
+            type: 'warning'
+          })
         })
       },
       appGroupListpage(page, pageSize) {
         let params = {
           appGroupName: this.applicationGroup,
           page: page || 1,
-          pageSize: pageSize || 5
+          pageSize: pageSize || 8
         }
         return Api.appgroupListpage(params)
       },
-      appGroupListall() {
-        Api.appgroupListall({})
-      },
+      // appGroupListall() {
+      //   Api.appgroupListall({})
+      // },
       addApplicationGroup() {
         this.dialogAddApplicationGroup = true
       },
+      //查询应用组
       doSearch() {
         let _this = this
         this.appGroupListpage().then((res) => {
-          res.data.forEach(function(item){
-            item.createTime = TimeFormat.timeFormat(item.createTime)
-            item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
-          })
-          _this.tableData = res.data
+          if(res.code === 200) {
+            res.data.forEach(function(item){
+              item.createTime = TimeFormat.timeFormat(item.createTime)
+              item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
+            })
+            _this.tableData = res.data
+          } else {
+            _this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
         }).catch((err) => {
-          console.log(222)
+          _this.$message({
+            message: "查询应用组失败",
+            type: 'warning'
+          })
         })
       },
-      //新增应用组逻辑 请求接口
+      //新增应用组
       doSubmitAddApplicationGroup() {
         var _this = this
         let params = {

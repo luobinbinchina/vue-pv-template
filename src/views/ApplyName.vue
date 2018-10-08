@@ -11,9 +11,9 @@
            <el-option label="应用2" value="2"></el-option>
          </el-select>
        </el-form-item>
-       <el-form-item>
+       <!-- <el-form-item>
          <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
-       </el-form-item>
+       </el-form-item> -->
        <el-form-item>
          <el-button type="primary" @click="addApply">新增应用</el-button>
        </el-form-item>
@@ -71,14 +71,34 @@
     <div class="application-group-pagination">
       <el-pagination
         background
-        layout="prev, pager, next"
-        :total="50">
+        layout="prev, next"
+        >
       </el-pagination>
     </div>
+    <el-dialog title="新增应用" :visible.sync="dialogAddApply">
+      <el-form :inline="true" class="add-apply">
+        <p class="add-apply-input">
+          <span>应用组名称</span>
+          <el-input v-model="form.applyName"></el-input>
+          <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <i class="el-icon-warning"></i>
+          </el-tooltip>
+        </p>
+        <p class="add-application-group-btn">
+          <el-form-item>
+            <el-button type="primary" @click="closeDialogAddApply">取消</el-button>
+            <el-button type="primary" @click="doSubmitAddApply">确定</el-button>
+          </el-form-item>
+        </p>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <style lang="scss">
+  .apply-name {
+    min-height: 600px;
+  }
   .application-group-pagination {
     text-align: center;
     margin-top: 10px;
@@ -165,8 +185,9 @@
   export default {
     data () {
       return {
+        dialogAddApply: false,
         applicationGroup: "",
-        tableData: mockTableData,
+        tableData: [],
         form: {
           applyName: '',
           applyGroup: ''
@@ -174,6 +195,15 @@
       }
     },
     methods: {
+      doSubmitAddApply() {
+
+      },
+      closeDialogAddApply() {
+        this.dialogAddApply = false
+      },
+      addApply() {
+        this.dialogAddApply = true
+      },
       handleEdit() {
 
       },
@@ -186,9 +216,6 @@
           "operatorId": 1
         }
         Api.appgroupAdd(params)
-      },
-      addApply() {
-
       },
       doSearch() {
 
