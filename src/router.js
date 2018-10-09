@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import ApplicationGroup from './views/ApplicationGroup.vue'
 import ApplyName from './views/ApplyName.vue'
+import StrategyGroup from './views/strategyGroup.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -31,6 +33,11 @@ export default new Router({
       path: '/applyName',
       name: 'applyName',
       component: ApplyName
+    },
+    {
+      path: '/strategyGroup',
+      name: 'applyName',
+      component: StrategyGroup
     }
   ]
 })
