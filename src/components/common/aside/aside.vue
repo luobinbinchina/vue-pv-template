@@ -1,7 +1,7 @@
 <template>
   <div class="aside">
     <div class="logo">
-      <span v-if="!isCollapse" class="text-span">OpenSDS</span>
+      <span v-if="!isCollapse" class="text-span"><img class="logo-img-big" src="https://pt-starimg.didistatic.com/static/starimg/img/Bdh0QsChVE25WqqPZzF.png"></span>
       <span class="img-span" v-if="isCollapse"><img class="logo-img" src="https://pt-starimg.didistatic.com/static/starimg/img/kd09dBTlVw5uaosvhLS.png"></span>
     </div>
     <el-menu
@@ -29,17 +29,17 @@
       </el-menu-item> -->
       <el-submenu index="2">
         <template slot="title">
-          <i class="iconfont adSys-CPhezuo_o"></i>
+          <i class="iconfont adSys-thunderbolt"></i>
           <span>降级策略</span>
         </template>
-        <el-menu-item index="/applicationGroup">策略组</el-menu-item>
-        <el-menu-item index="/applyName">降级点与策略</el-menu-item>
+        <el-menu-item index="/strategyGroup">策略组</el-menu-item>
+        <el-menu-item index="/demotePoint">降级点</el-menu-item>
       </el-submenu>
-      <el-menu-item index="3">
-        <i class="iconfont adSys-thunderbolt"></i>
+      <el-menu-item index="/downgradeChart">
+        <i class="iconfont adSys-barchart"></i>
         <span slot="title">限流降级大盘</span>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="/settingUp">
         <i class="iconfont adSys-setup_fill"></i>
         <span slot="title">设置</span>
       </el-menu-item>

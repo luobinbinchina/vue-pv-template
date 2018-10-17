@@ -40,7 +40,7 @@
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit">编辑</el-button>
+              @click="handleEdit(scope.row)">编辑</el-button>
             <el-button
               size="mini"
               type="danger"
@@ -58,15 +58,15 @@
       </el-pagination>
     </div>
     <el-dialog title="新增应用组" :visible.sync="dialogAddApplicationGroup">
-      <el-form :inline="true" class="add-application-group">
+      <el-form :inline="true" class="add-application-group" label-position="right" label-width="120px">
         <p class="add-application-group-input">
           <span>应用组名称</span>
           <el-input v-model="applyGroupName"></el-input>
           <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
-            <i class="el-icon-warning"></i>
+            <i class="el-icon-question"></i>
           </el-tooltip>
         </p>
-        <p class="add-application-group-btn">
+        <p class="add-application-group-btn dialog-footer">
           <el-form-item>
             <el-button type="primary" @click="closeialogAddApplicationGroup">取消</el-button>
             <el-button type="primary" @click="doSubmitAddApplicationGroup">确定</el-button>
@@ -75,19 +75,19 @@
       </el-form>
     </el-dialog>
     <el-dialog title="修改应用组" :visible.sync="dialogEditApplicationGroup">
-      <el-form :inline="true" class="edit-application-group">
+      <el-form :inline="true" class="edit-application-group" label-position="right" label-width="120px">
         <p class="edit-application-group-input">
           <span>原应用组名称</span>
-          <el-input v-model="oldApplyGroupName"></el-input>
+          <el-input v-model="editRowData.appGroupName"></el-input>
         </p>
         <p class="edit-application-group-input edit-application-group-input-new">
           <span>新应用组名称</span>
-          <el-input v-model="newApplyGroupName"></el-input>
+          <el-input v-model="newAppGroupName"></el-input>
           <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
-            <i class="el-icon-warning"></i>
+            <i class="el-icon-question"></i>
           </el-tooltip>
         </p>
-        <p class="edit-application-group-btn">
+        <p class="edit-application-group-btn dialog-footer">
           <el-form-item>
             <el-button type="primary" @click="closedialogEditApplicationGroup">取消</el-button>
             <el-button type="primary" @click="doSubmitEditApplicationGroup">确定</el-button>
@@ -160,91 +160,98 @@
   .application-group-search .el-button {
     padding: 10px 14px;
   }
+  .el-dialog__header {
+    padding: 20px;
+    border-bottom: 1px solid #dcdfe6;
+  }
+  .dialog-footer {
+    padding-left: 80px;
+  }
 </style>
 
 <script>
 /* eslint-disable */
   import Api from '../api/api'
   import TimeFormat from '../utils/timeFormat'
-  let mockTableData = [
-    {
-      applicationGroupName: '青桔',
-      operatorTime: '2016-05-02',
-      operatorName: '小明',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '王者荣耀',
-      operatorTime: '2016-06-02',
-      operatorName: '小彬',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '今日头条',
-      operatorTime: '2016-07-02',
-      operatorName: '小杨',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '美团外卖',
-      operatorTime: '2016-08-02',
-      operatorName: '小小',
-      createTime: '2016-06-02'
-    },
-    {
-      applicationGroupName: '青桔',
-      operatorTime: '2016-05-02',
-      operatorName: '小明',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '王者荣耀',
-      operatorTime: '2016-06-02',
-      operatorName: '小彬',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '今日头条',
-      operatorTime: '2016-07-02',
-      operatorName: '小杨',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '美团外卖',
-      operatorTime: '2016-08-02',
-      operatorName: '小小',
-      createTime: '2016-06-02'
-    },
-    {
-      applicationGroupName: '青桔',
-      operatorTime: '2016-05-02',
-      operatorName: '小明',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '王者荣耀',
-      operatorTime: '2016-06-02',
-      operatorName: '小彬',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '今日头条',
-      operatorTime: '2016-07-02',
-      operatorName: '小杨',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '美团外卖',
-      operatorTime: '2016-08-02',
-      operatorName: '小小',
-      createTime: '2016-06-02'
-    }
-  ]
+  // let mockTableData = [
+  //   {
+  //     applicationGroupName: '青桔',
+  //     operatorTime: '2016-05-02',
+  //     operatorName: '小明',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '王者荣耀',
+  //     operatorTime: '2016-06-02',
+  //     operatorName: '小彬',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '今日头条',
+  //     operatorTime: '2016-07-02',
+  //     operatorName: '小杨',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '美团外卖',
+  //     operatorTime: '2016-08-02',
+  //     operatorName: '小小',
+  //     createTime: '2016-06-02'
+  //   },
+  //   {
+  //     applicationGroupName: '青桔',
+  //     operatorTime: '2016-05-02',
+  //     operatorName: '小明',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '王者荣耀',
+  //     operatorTime: '2016-06-02',
+  //     operatorName: '小彬',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '今日头条',
+  //     operatorTime: '2016-07-02',
+  //     operatorName: '小杨',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '美团外卖',
+  //     operatorTime: '2016-08-02',
+  //     operatorName: '小小',
+  //     createTime: '2016-06-02'
+  //   },
+  //   {
+  //     applicationGroupName: '青桔',
+  //     operatorTime: '2016-05-02',
+  //     operatorName: '小明',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '王者荣耀',
+  //     operatorTime: '2016-06-02',
+  //     operatorName: '小彬',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '今日头条',
+  //     operatorTime: '2016-07-02',
+  //     operatorName: '小杨',
+  //     createTime: '2016-04-02'
+  //   },
+  //   {
+  //     applicationGroupName: '美团外卖',
+  //     operatorTime: '2016-08-02',
+  //     operatorName: '小小',
+  //     createTime: '2016-06-02'
+  //   }
+  // ]
   export default {
     data () {
       return {
-        oldApplyGroupName: '',
-        newApplyGroupName: '',
+        editRowData: {},
+        newAppGroupName: '',
         applicationGroup: '',
         tableData: [],
         dialogAddApplicationGroup: false,
@@ -259,9 +266,9 @@
       //编辑应用组
       doSubmitEditApplicationGroup() {
         let params = {
-          appGroupName: this.oldApplyGroupName,
-          newAppGroupName: this.newApplyGroupName,
-          operatorId: new Date().getTime()
+          appGroupName: this.editRowData.appGroupName,
+          newAppGroupName: this.newAppGroupName,
+          operatorId: 183802
         }
         Api.appgroupEdit(params).then((res) => {
           if (res.code === 200) {
@@ -269,6 +276,7 @@
               message: '修改应用组成功',
               type: 'success'
             })
+            this.doSearch()
           } else {
             this.$message({
               message: res.msg,
@@ -281,12 +289,13 @@
             type: 'warning'
           })
         })
-        this.closedialogEditApplicationGroup() // todo 重新渲染页面
+        this.closedialogEditApplicationGroup()
       },
       closedialogEditApplicationGroup() {
         this.dialogEditApplicationGroup = false
       },
-      handleEdit() {
+      handleEdit(rowData) {
+        this.editRowData = rowData
         this.dialogEditApplicationGroup = true
       },
       //删除应用组
@@ -301,6 +310,7 @@
               message: '删除应用组成功',
               type: 'success'
             })
+            this.doSearch()
           } else {
             this.$message({
               message: res.msg,
@@ -343,9 +353,6 @@
         }
         return Api.appgroupListpage(params)
       },
-      // appGroupListall() {
-      //   Api.appgroupListall({})
-      // },
       addApplicationGroup() {
         this.dialogAddApplicationGroup = true
       },
@@ -383,6 +390,7 @@
               message: '新增成功',
               type: 'success'
             })
+            this.doSearch()
           } else {
             this.$message({
               message: res.msg,

@@ -1,12 +1,32 @@
 <template>
-  <div class="application-group">
-    <div class="application-group-search">
+  <div class="apply-name">
+    <div class="apply-name-search">
      <el-form :inline="true">
+       <!-- <el-form-item label="应用名称">
+         <el-input v-model="form.applyName"  placeholder=""></el-input>
+       </el-form-item> -->
        <el-form-item label="应用组">
-         <el-input v-model="applicationGroup" placeholder=""></el-input>
+         <el-select v-model="applyGroup" placeholder="">
+           <p v-for="(item, index) in applyGroupData" :key="index">
+             <el-option :label="item" :value="item"></el-option>
+           </p>
+         </el-select>
        </el-form-item>
-       <el-form-item>
+       <el-form-item label="应用名称">
+         <el-select v-model="applyName" placeholder="">
+           <p v-for="(item, index) in anyApplyData" :key="index">
+             <el-option :label="item" :value="item"></el-option>
+           </p>
+         </el-select>
+       </el-form-item>
+       <el-form-item label="策略组">
+         <el-input v-model="strategyGroup" placeholder=""></el-input>
+       </el-form-item>
+       <!-- <el-form-item>
          <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
+       </el-form-item> -->
+       <el-form-item>
+         <el-button type="primary" @click="addStrategyGroup">新增策略组</el-button>
        </el-form-item>
        <el-form-item>
          <el-button type="primary" @click="doSearch">查找</el-button>
@@ -24,27 +44,40 @@
           width="180">
         </el-table-column>
         <el-table-column
+          prop="appName"
+          label="应用名称"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="strategyGroupName"
+          label="策略组"
+          width="180">
+        </el-table-column>
+        <el-table-column
           prop="modifiedTime"
           label="更新时间"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="operatorId"
-          label="操作人">
-        </el-table-column>
-        <el-table-column
           prop="createTime"
           label="创建时间">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column
+          prop="operatorId"
+          label="操作人">
+        </el-table-column>
+        <el-table-column label="操作" width="300">
           <template slot-scope="scope">
             <el-button
               size="mini"
-              @click="handleEdit">编辑</el-button>
+              @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button
+              size="mini"
+              @click="handleClone(scope.row)">克隆</el-button>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.row.appGroupName, scope.row.operatorId)">删除</el-button>
+              @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -57,40 +90,120 @@
         >
       </el-pagination>
     </div>
-    <el-dialog title="新增应用组" :visible.sync="dialogAddApplicationGroup">
-      <el-form :inline="true" class="add-application-group">
-        <p class="add-application-group-input">
-          <span>应用组名称</span>
-          <el-input v-model="applyGroupName"></el-input>
-          <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
-            <i class="el-icon-warning"></i>
-          </el-tooltip>
+    <el-dialog title="新增策略组" :visible.sync="dialogStrategyGroup">
+      <el-form :inline="true" class="add-strategy-group" label-position="right" label-width="120px">
+        <p class="of-application-group">
+          <el-form-item label="应用组名称">
+            <el-select v-model="addApplyGroupName" placeholder="">
+              <p v-for="(item, index) in applyGroupData" :key="index">
+                <el-option :label="item" :value="item"></el-option>
+              </p>
+            </el-select>
+          </el-form-item>
         </p>
-        <p class="add-application-group-btn">
+        <p class="of-strategy-group">
+          <el-form-item label="应 用 名 称">
+            <el-select v-model="addApplyName" placeholder="">
+              <p v-for="(item, index) in someApplyData" :key="index">
+                <el-option :label="item" :value="item"></el-option>
+              </p>
+            </el-select>
+          </el-form-item>
+        </p>
+        <p class="add-strategy-group-name">
+          <el-form-item label="策略组名称">
+            <el-input v-model="form.strategyGroupName"></el-input>
+          </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="closeialogAddApplicationGroup">取消</el-button>
-            <el-button type="primary" @click="doSubmitAddApplicationGroup">确定</el-button>
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p>
+        <!-- <p class="of-application-group">
+          <el-form-item label="所用策略组">
+            <el-select v-model="form.strategyGroup" placeholder="">
+              <el-option label="策略组1" value="1"></el-option>
+              <el-option label="策略组2" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+        </p> -->
+        <p class="dialog-footer">
+          <el-form-item>
+            <el-button type="primary" @click="closeDialogAddStrategyGroupy">取消</el-button>
+            <el-button type="primary" @click="doSubmitAddStrategyGroup">确定</el-button>
           </el-form-item>
         </p>
       </el-form>
     </el-dialog>
-    <el-dialog title="修改应用组" :visible.sync="dialogEditApplicationGroup">
-      <el-form :inline="true" class="edit-application-group">
-        <p class="edit-application-group-input">
-          <span>原应用组名称</span>
-          <el-input v-model="oldApplyGroupName"></el-input>
+    <el-dialog title="修改策略组" :visible.sync="dialogEditStrategyGroup">
+      <el-form :inline="true" class="edit-apply" label-position="right" label-width="120px">
+        <p class="of-application-group">
+          <el-form-item label="原策略组名称">
+            <el-input v-model="editRowData.strategyGroupName"></el-input>
+          </el-form-item>
         </p>
-        <p class="edit-application-group-input edit-application-group-input-new">
-          <span>新应用组名称</span>
-          <el-input v-model="newApplyGroupName"></el-input>
-          <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
-            <i class="el-icon-warning"></i>
-          </el-tooltip>
-        </p>
-        <p class="edit-application-group-btn">
+        <p class="edit-apply-name">
+          <el-form-item label="新策略组名称">
+            <el-input v-model="editStrategyGroupName"></el-input>
+          </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="closedialogEditApplicationGroup">取消</el-button>
-            <el-button type="primary" @click="doSubmitEditApplicationGroup">确定</el-button>
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p>
+        <p class="dialog-footer">
+          <el-form-item>
+            <el-button type="primary" @click="closeDialogEditStrategyGroup">取消</el-button>
+            <el-button type="primary" @click="doSubmitEditStrategyGroup">确定</el-button>
+          </el-form-item>
+        </p>
+      </el-form>
+    </el-dialog>
+    <el-dialog title="克隆策略组" :visible.sync="dialogCloneStrategyGroup">
+      <el-form :inline="true" class="edit-apply" label-position="right" label-width="120px">
+        <p class="of-application-group">
+          <el-form-item label="原应用组名称">
+            <el-select v-model="cloneRowData.appGroupName" placeholder="" disabled>
+              <p v-for="(item, index) in applyGroupData" :key="index">
+                <el-option :label="item" :value="item"></el-option>
+              </p>
+            </el-select>
+          </el-form-item>
+        </p>
+        <p class="of-strategy-group">
+          <el-form-item label="应 用 名 称">
+            <el-select v-model="cloneRowData.appName" placeholder="" disabled>
+              <p v-for="(item, index) in someApplyData" :key="index">
+                <el-option :label="item" :value="item"></el-option>
+              </p>
+            </el-select>
+          </el-form-item>
+        </p>
+        <p class="of-application-group">
+          <el-form-item label="原策略组名称">
+            <el-select v-model="cloneRowData.strategyGroupName" placeholder="" disabled>
+              <p v-for="(item, index) in allStrategyGroupData" :key="index">
+                <el-option :label="item" :value="item"></el-option>
+              </p>
+            </el-select>
+          </el-form-item>
+        </p>
+        <p class="edit-apply-name">
+          <el-form-item label="新策略组名称">
+            <el-input v-model="newStrategyGroupName"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p>
+        <p class="dialog-footer">
+          <el-form-item>
+            <el-button type="primary" @click="closeDialogCloneStrategyGroup">取消</el-button>
+            <el-button type="primary" @click="doSubmitCloneStrategyGroup">确定</el-button>
           </el-form-item>
         </p>
       </el-form>
@@ -99,11 +212,8 @@
 </template>
 
 <style lang="scss">
-  .application-group {
+  .apply-name {
     min-height: 600px;
-  }
-  .application-group .application-group-search .el-form-item {
-    margin-right: 25px;
   }
   .application-group-pagination {
     text-align: center;
@@ -118,155 +228,205 @@
   .el-table tr th {
     text-align: center;
   }
-  .add-application-group .add-application-group-input {
-    padding-left: 20px
-  }
-  .add-application-group .add-application-group-input .el-input {
-    width: 40%;
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  .add-application-group .add-application-group-input .el-input .el-input__inner {
-    height: 35px;
-  }
-  .add-application-group .add-application-group-btn {
-    margin-top: 40px;
-  }
-  //修改弹框样式
-  .edit-application-group .edit-application-group-input {
-    padding-left: 20px
-  }
-  .edit-application-group .edit-application-group-input .el-input {
-    width: 40%;
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  .edit-application-group .edit-application-group-input .el-input .el-input__inner {
-    height: 35px;
-  }
-  .edit-application-group .edit-application-group-input-new {
-    margin-top: 15px;
-  }
-  .edit-application-group .edit-application-group-btn {
-    margin-top: 40px;
-  }
-  .el-table td {
-    padding: 8px 0;
-  }
-  .el-input__inner {
-    height: 34px;
-    line-height: 34px;
-  }
-  .application-group-search .el-button {
+  .apply-name-search .el-button {
     padding: 10px 14px;
+  }
+  .el-dialog__header {
+    padding: 20px;
+    border-bottom: 1px solid #dcdfe6;
+  }
+  .dialog-footer {
+    padding-left: 80px;
   }
 </style>
 
 <script>
-/* eslint-disable */
+  /* eslint-disable */
   import Api from '../api/api'
   import TimeFormat from '../utils/timeFormat'
   let mockTableData = [
     {
       applicationGroupName: '青桔',
+      applyName: 'apply1',
+      usingPolicyGroup: 'group1',
       operatorTime: '2016-05-02',
       operatorName: '小明',
       createTime: '2016-04-02'
     },
     {
       applicationGroupName: '王者荣耀',
+      applyName: 'apply2',
+      usingPolicyGroup: 'group2',
       operatorTime: '2016-06-02',
       operatorName: '小彬',
       createTime: '2016-04-02'
     },
     {
       applicationGroupName: '今日头条',
+      applyName: 'apply3',
+      usingPolicyGroup: 'group3',
       operatorTime: '2016-07-02',
       operatorName: '小杨',
       createTime: '2016-04-02'
     },
     {
       applicationGroupName: '美团外卖',
+      applyName: 'apply4',
+      usingPolicyGroup: 'group4',
       operatorTime: '2016-08-02',
       operatorName: '小小',
       createTime: '2016-06-02'
     },
     {
       applicationGroupName: '青桔',
+      applyName: 'apply5',
+      usingPolicyGroup: 'group5',
       operatorTime: '2016-05-02',
       operatorName: '小明',
       createTime: '2016-04-02'
     },
     {
       applicationGroupName: '王者荣耀',
+      applyName: 'apply6',
+      usingPolicyGroup: 'group6',
       operatorTime: '2016-06-02',
       operatorName: '小彬',
       createTime: '2016-04-02'
     },
     {
       applicationGroupName: '今日头条',
+      applyName: 'apply7',
+      usingPolicyGroup: 'group7',
       operatorTime: '2016-07-02',
       operatorName: '小杨',
       createTime: '2016-04-02'
     },
     {
       applicationGroupName: '美团外卖',
-      operatorTime: '2016-08-02',
-      operatorName: '小小',
-      createTime: '2016-06-02'
-    },
-    {
-      applicationGroupName: '青桔',
-      operatorTime: '2016-05-02',
-      operatorName: '小明',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '王者荣耀',
-      operatorTime: '2016-06-02',
-      operatorName: '小彬',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '今日头条',
-      operatorTime: '2016-07-02',
-      operatorName: '小杨',
-      createTime: '2016-04-02'
-    },
-    {
-      applicationGroupName: '美团外卖',
+      applyName: 'apply8',
+      usingPolicyGroup: 'group8',
       operatorTime: '2016-08-02',
       operatorName: '小小',
       createTime: '2016-06-02'
     }
   ]
+  let mockStrategyGroup = ['strategy1', 'strategy2', 'strategy3', 'strategy4', 'strategy5', 'strategy6']
   export default {
     data () {
       return {
-        oldApplyGroupName: '',
-        newApplyGroupName: '',
-        applicationGroup: '',
+        cloneRowData: {},
+        newStrategyGroupName: '',
+        allStrategyGroupData: [],
+        primaryStrategyGroupName: '',
+        dialogCloneStrategyGroup: false,
+        editStrategyGroupName: '',
+        anyApplyData: [],
+        applyGroup: '',
+        applyName: '',
+        strategyGroup: '',
+        someApplyData: [],
+        addApplyName: '',
+        addApplyGroupName: '',
+        strategyGroupData: mockStrategyGroup,
+        editStrategyGroup: '',
+        editApplyName: '',
+        editRowData: {},
+        dialogEditApply: false,
+        dialogStrategyGroup: false,
+        dialogEditStrategyGroup: false,
+        applicationGroup: "",
         tableData: [],
-        dialogAddApplicationGroup: false,
-        applyGroupName: '',
-        dialogEditApplicationGroup: false
+        applyGroupData: [],
+        form: {
+          applyName: '',
+          applyGroup: '',
+          strategyGroupName: ''
+        }
       }
     },
-    created() {
-      this.doSearch()
+    created () {
+      this.appgroupListall()
+      // this.strategygroupListall()
+    },
+    computed: {
+    },
+    watch: {
+      //监听应用组变化 获取该应用组下所有应用
+      'addApplyGroupName': function(newVal, oldVal) {
+        this.addApplyName = ''
+        console.log('watch addApplyGroupName', newVal)
+        this.getAppinfoListall(newVal).then((res) => {
+          if(res.code === 200) {
+            this.someApplyData = res.data
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            message: "查询该应用组下的所有应用失败",
+            type: 'warning'
+          })
+        })
+      },
+      'applyGroup': function(newVal, oldVal) {
+        this.applyName = ''
+        this.getAppinfoListall(newVal).then((res) => {
+          if(res.code === 200) {
+            this.anyApplyData = res.data
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            message: "查询该应用组下的所有应用失败",
+            type: 'warning'
+          })
+        })
+      }
+      // 'addApplyName': function(newVal, oldVal) {
+      //   let params = {
+      //     appGroupName: this.addApplyGroupName,
+      //     appName: newVal
+      //   }
+      //   Api.strategygroupListall(params).then((res) => {
+      //     if (res.code === 200) {
+      //       console.log('strategygroupListall', res.data)
+      //       this.allStrategyGroupData = res.data
+      //     } else {
+      //       this.$message({
+      //         message: res.msg,
+      //         type: 'warning'
+      //       })
+      //     }
+      //   }).catch((err) => {
+      //     this.$message({
+      //       message: "查询该应用下面的所有策略组失败",
+      //       type: 'warning'
+      //     })
+      //   })
+      // }
     },
     methods: {
-      //编辑应用组
-      doSubmitEditApplicationGroup() {
+      //克隆策略组请求接口逻辑
+      doSubmitCloneStrategyGroup () {
         let params = {
-          appGroupName: this.oldApplyGroupName,
-          newAppGroupName: this.newApplyGroupName,
-          operatorId: new Date().getTime()
+          appGroupName: this.cloneRowData.appGroupName,
+          appName: this.cloneRowData.appName,
+          strategyGroupName: this.cloneRowData.strategyGroupName,
+          newStrategyGroupName: this.newStrategyGroupName,
+          operatorId: this.cloneRowData.operatorId
         }
-        Api.appgroupEdit(params).then((res) => {
+        Api.strategygroupClone(params).then((res) => {
           if (res.code === 200) {
+            console.log('strategygroupClone', res.data)
             this.$message({
-              message: '修改应用组成功',
+              message: "克隆策略组成功",
               type: 'success'
             })
           } else {
@@ -277,28 +437,34 @@
           }
         }).catch((err) => {
           this.$message({
-            message: "修改应用组失败",
+            message: "克隆策略组失败",
             type: 'warning'
           })
         })
-        this.closedialogEditApplicationGroup() // todo 重新渲染页面
+        this.dialogCloneStrategyGroup = false
       },
-      closedialogEditApplicationGroup() {
-        this.dialogEditApplicationGroup = false
+      //关闭克隆策略组
+      closeDialogCloneStrategyGroup () {
+        this.dialogCloneStrategyGroup = false
       },
-      handleEdit() {
-        this.dialogEditApplicationGroup = true
+      //克隆策略组逻辑
+      handleClone (rowData) {
+        this.dialogCloneStrategyGroup = true
+        this.cloneRowData = rowData
       },
-      //删除应用组
-      handleDelete(appGroupName, operatorId) {
+      //新增策略组逻辑
+      doSubmitAddStrategyGroup () {
         let params = {
-          appGroupName: appGroupName,
-          operatorId: operatorId
+          appGroupName: this.addApplyGroupName,
+          appName: this.addApplyName,
+          strategyGroupName: this.form.strategyGroupName,
+          operatorId: 183802
         }
-        Api.appgroupDelete(params).then((res) => {
-          if (res.code === 200) {
+        Api.strategygroupAdd(params).then((res) => {
+          if(res.code === 200) {
+            console.log(res.data)
             this.$message({
-              message: '删除应用组成功',
+              message: '新增策略组成功',
               type: 'success'
             })
           } else {
@@ -309,13 +475,22 @@
           }
         }).catch((err) => {
           this.$message({
-            message: "删除应用组失败",
+            message: "新增策略组失败",
             type: 'warning'
           })
         })
+        this.dialogStrategyGroup = false;
       },
+      //查询某应用组下面的所有应用
+      getAppinfoListall (appGroup) {
+        let params = {
+          appGroupName: appGroup
+        }
+        return Api.appinfoListall(params)
+      },
+      //下一页前一页查询
       currentChangeData(page) {
-        this.appGroupListpage(page).then((res) => {
+        this.strategygroupListpage(page).then((res) => {
           if(res.code === 200) {
             res.data.forEach(function(item){
               item.createTime = TimeFormat.timeFormat(item.createTime)
@@ -330,33 +505,150 @@
           }
         }).catch((err) => {
           this.$message({
-            message: "分页查询应用组失败",
+            message: "分页查询应用失败",
             type: 'warning'
           })
         })
       },
-      appGroupListpage(page, pageSize) {
+      // //查询所有策略组
+      // strategygroupListall () { // todo
+      //   let params = {
+      //     appGroupName: 'apply',
+      //     appName: 'yy1'
+      //   }
+      //   Api.strategygroupListall(params).then((res) => {
+      //     if (res.code === 200) {
+      //       console.log('strategygroupListall', res.data)
+      //     } else {
+      //       this.$message({
+      //         message: res.msg,
+      //         type: 'warning'
+      //       })
+      //     }
+      //   }).catch((err) => {
+      //     this.$message({
+      //       message: "查询所有策略组失败",
+      //       type: 'warning'
+      //     })
+      //   })
+      // },
+      //修改策略组
+      doSubmitEditStrategyGroup () {
         let params = {
-          appGroupName: this.applicationGroup,
+          appGroupName: this.editRowData.appGroupName,
+          appName: this.editRowData.appName,
+          strategyGroupName: this.editRowData.strategyGroupName,
+          newStrategyGroupName: this.editStrategyGroupName,
+          operatorId: this.editRowData.operatorId
+        }
+        Api.strategygroupEdit(params).then((res) => {
+          if(res.code === 200) {
+            this.$message({
+              message: "修改策略组成功",
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          console.log('err', err)
+          this.$message({
+            message: "编辑应用失败",
+            type: 'warning'
+          })
+        })
+        this.dialogEditStrategyGroup = false
+      },
+      closeDialogEditStrategyGroup () {
+        this.dialogStrategyGroup = false
+      },
+      appgroupListall () {
+        let params = {
+        }
+        Api.appgroupListall(params).then((res) => {
+          if(res.code === 200) {
+            // res.data.forEach(function(item){
+            //   item.createTime = TimeFormat.timeFormat(item.createTime)
+            //   item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
+            // })
+            console.log('appgroupListall', res.data)
+            this.applyGroupData = res.data
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            message: "查询应用失败",
+            type: 'warning'
+          })
+        })
+      },
+      addStrategyGroup() {
+        this.dialogStrategyGroup = true
+      },
+      closeDialogAddStrategyGroupy () {
+        this.dialogStrategyGroup = false
+      },
+      handleEdit(row) {
+        this.dialogEditStrategyGroup = true
+        console.log('row',row)
+        this.editRowData = row
+      },
+      //删除策略组
+      handleDelete(rowData) {
+        let params = {
+          appGroupName: rowData.appGroupName,
+          appName: rowData.appName,
+          strategyGroupName: rowData.strategyGroupName,
+          operatorId: rowData.operatorId
+        }
+        Api.deleteStrategygroup(params).then((res) => {
+          if(res.code === 200) {
+            this.$message({
+              message: "删除策略组成功",
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
+        }).catch((err => {
+          console.log('err', err)
+          this.$message({
+            message: "删除策略组失败",
+            type: 'warning'
+          })
+        }))
+      },
+      // 分页查询策略组
+      strategygroupListpage(page, pageSize) {
+        let params = {
+          appGroupName: this.applyGroup,
+          appName: this.applyName,
+          strategyGroupName: this.strategyGroup,
           page: page || 1,
           pageSize: pageSize || 8
         }
-        return Api.appgroupListpage(params)
+        return Api.strategygroupListpage(params)
       },
-      // appGroupListall() {
-      //   Api.appgroupListall({})
-      // },
-      addApplicationGroup() {
-        this.dialogAddApplicationGroup = true
-      },
-      //查询应用组
+      //查询应用
       doSearch() {
-        this.appGroupListpage().then((res) => {
+        console.log('doSearch', this.applyGroupData)
+         this.strategygroupListpage().then((res) => {
           if(res.code === 200) {
             res.data.forEach(function(item){
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
+            console.log('appinfoListpage', res.data)
             this.tableData = res.data
           } else {
             this.$message({
@@ -366,39 +658,10 @@
           }
         }).catch((err) => {
           this.$message({
-            message: "查询应用组失败",
+            message: "查询策略组失败",
             type: 'warning'
           })
         })
-      },
-      //新增应用组
-      doSubmitAddApplicationGroup() {
-        let params = {
-          appGroupName: this.applyGroupName,
-          operatorId: new Date().getTime()
-        }
-        Api.appgroupAdd(params).then((res) => {
-          if (res.code === 200) {
-            this.$message({
-              message: '新增成功',
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: res.msg,
-              type: 'warning'
-            })
-          }
-        }).catch((err) => {
-          this.$message({
-            message: "新增失败",
-            type: 'warning'
-          })
-        })
-        this.closeialogAddApplicationGroup()
-      },
-      closeialogAddApplicationGroup() {
-        this.dialogAddApplicationGroup = false
       }
     }
   }

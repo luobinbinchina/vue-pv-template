@@ -15,9 +15,9 @@
             </div>
           </LayoutContent>
         </el-main>
-        <el-footer class="footer-wrapper" :style="'margin-left:' + footerWidth">
+        <!-- <el-footer class="footer-wrapper" :style="'margin-left:' + footerWidth">
           <LayoutFooter></LayoutFooter>
-        </el-footer>
+        </el-footer> -->
       </el-container>
     </el-container>
   </div>

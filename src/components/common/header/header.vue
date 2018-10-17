@@ -2,7 +2,8 @@
   <div class="header-controller">
     <ul class="hd-ct-left">
       <li @click="changeAside">
-        <a class="iconfont adSys-outdent" href="javascript:;"></a>
+        <a class="iconfont adSys-outdent" href="javascript:;" v-if="iconRemember ==='left'"></a>
+        <a class="iconfont adSys-indent" href="javascript:;" v-if="iconRemember ==='right'"></a>
       </li>
       <li>
         <a class="iconfont adSys-reload" href="javascript:;"></a>
@@ -19,7 +20,7 @@
           <span class="el-dropdown-link">
             <a href="javascript:;">
               <a class="iconfont adSys-user user-li" href="javascript:;"></a>
-              <span class="user-name">不懂小彬</span>
+              <span class="user-name">Harvey</span>
               <a class="iconfont adSys-down user-li" href="javascript:;"></a>
             </a>
           </span>
@@ -28,7 +29,7 @@
             <el-dropdown-item>登出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-        
+
       </li>
     </ul>
   </div>
@@ -48,6 +49,7 @@
     },
     data(){
       return {
+        iconRemember: 'left'
       }
     },
     computed:{
@@ -56,6 +58,11 @@
     },
     methods: {
       changeAside() {
+        if (this.iconRemember === 'left') {
+          this.iconRemember = 'right'
+        } else {
+          this.iconRemember = 'left'
+        }
         eventHub.$emit('changeAside')
       }
     }
