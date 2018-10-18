@@ -115,6 +115,10 @@
           width="100">
         </el-table-column>
         <el-table-column
+          prop="operatorId"
+          label="操作人">
+        </el-table-column>
+        <el-table-column
           prop="modifiedTime"
           label="更新时间"
           width="100">
@@ -122,10 +126,6 @@
         <el-table-column
           prop="createTime"
           label="创建时间">
-        </el-table-column>
-        <el-table-column
-          prop="operatorId"
-          label="操作人">
         </el-table-column>
         <el-table-column label="操作" width="220">
           <template slot-scope="scope">
