@@ -942,7 +942,7 @@
       pointStrategyListpage (page, pageSize) {
         let params = {
           appGroupName: this.form.applyGroup,
-          applyName: this.form.appName,
+          appName: this.form.appName,
           strategyGroupName: this.form.strategyGroup,
           point: this.form.demotePoint,
           page: page || 1,
