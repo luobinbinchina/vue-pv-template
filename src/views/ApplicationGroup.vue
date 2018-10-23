@@ -96,6 +96,7 @@
         </p>
       </el-form>
     </el-dialog>
+
   </div>
 </template>
 
@@ -305,25 +306,36 @@
           appGroupName: appGroupName,
           operatorId: operatorId
         }
-        Api.appgroupDelete(params).then((res) => {
-          if (res.code === 200) {
+        this.$confirm('确定删除该应用组吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          Api.appgroupDelete(params).then((res) => {
+            if (res.code === 200) {
+              this.$message({
+                message: '删除应用组成功',
+                type: 'success'
+              })
+              this.doSearch()
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'warning'
+              })
+            }
+          }).catch((err) => {
             this.$message({
-              message: '删除应用组成功',
-              type: 'success'
-            })
-            this.doSearch()
-          } else {
-            this.$message({
-              message: res.msg,
+              message: "删除应用组失败",
               type: 'warning'
             })
-          }
-        }).catch((err) => {
-          this.$message({
-            message: "删除应用组失败",
-            type: 'warning'
           })
-        })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       currentChangeData(page) {
         this.appGroupListpage(page).then((res) => {

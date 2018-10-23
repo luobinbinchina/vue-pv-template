@@ -920,25 +920,36 @@
           strategyGroupName: rowData.strategyGroupName,
           operatorId: rowData.operatorId
         }
-        Api.pointStrategyDelete(params).then((res) => {
-          if(res.code === 200) {
+        this.$confirm('确定删除该降级点吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          Api.pointStrategyDelete(params).then((res) => {
+            if(res.code === 200) {
+              this.$message({
+                message: "删除降级点成功",
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'warning'
+              })
+            }
+          }).catch((err => {
+            console.log('err', err)
             this.$message({
-              message: "删除降级点成功",
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: res.msg,
+              message: "删除降级点失败",
               type: 'warning'
             })
-          }
-        }).catch((err => {
-          console.log('err', err)
+          }))
+        }).catch(() => {
           this.$message({
-            message: "删除降级点失败",
-            type: 'warning'
-          })
-        }))
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       pointStrategyListpage (page, pageSize) {
         let params = {

@@ -387,25 +387,37 @@
           appName: rowData.appName,
           operatorId: rowData.operatorId
         }
-        Api.appinfoDelete(params).then((res) => {
-          if(res.code === 200) {
+        this.$confirm('确定删除该应用吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          Api.appinfoDelete(params).then((res) => {
+            if(res.code === 200) {
+              this.$message({
+                message: "删除应用成功",
+                type: 'success'
+              })
+              this.appgroupListall()
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'warning'
+              })
+            }
+          }).catch((err) => {
+            console.log('err', err)
             this.$message({
-              message: "删除应用成功",
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: res.msg,
+              message: "删除应用失败",
               type: 'warning'
             })
-          }
-        }).catch((err) => {
-          console.log('err', err)
-          this.$message({
-            message: "删除应用失败",
-            type: 'warning'
           })
-        })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       applyListpage(page, pageSize, appGroupName) {
         let params = {
