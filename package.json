@@ -9,7 +9,6 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@kd/starui": "^1.2.28",
     "echarts": "^4.2.0-rc.1",
     "element-ui": "^2.4.7",
     "vue": "^2.5.17",

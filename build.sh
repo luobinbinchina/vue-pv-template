@@ -15,7 +15,7 @@ nvm use v8.9.1
 ########################
 #根据具体需求修改下面代码
 git checkout master && git pull
-npm config set registry http://registry.npm.xiaojukeji.com
+npm config set registry https://registry.npm.taobao.org
 npm install
 ret=$?
 if [ $ret -ne 0 ];then
