@@ -14,7 +14,7 @@ nvm use v8.9.1
 # npm install and build
 ########################
 #根据具体需求修改下面代码
-git pull
+git checkout master && git pull
 npm config set registry http://registry.npm.kuaidadi.com
 npm install
 ret=$?
