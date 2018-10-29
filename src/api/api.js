@@ -1,6 +1,6 @@
 import  fetch from '../utils/fetch'
 
-const apiHost = 'http://10.179.100.222:8887'
+const apiHost = 'http://127.0.0.1:8887'
 
 export default {
   testGet: (params) =>  {
