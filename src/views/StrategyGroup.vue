@@ -564,7 +564,7 @@
         this.dialogEditStrategyGroup = false
       },
       closeDialogEditStrategyGroup () {
-        this.dialogStrategyGroup = false
+        this.dialogEditStrategyGroup = false
       },
       appgroupListall () {
         let params = {

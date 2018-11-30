@@ -4,6 +4,7 @@
      <el-form :inline="true">
        <el-form-item label="应用组">
          <el-select v-model="form.applyGroup" placeholder="">
+           <el-option label="全部" value=""></el-option>
            <p v-for="(item, index) in applyGroupData" :key="index">
              <el-option :label="item" :value="item"></el-option>
            </p>
@@ -308,7 +309,7 @@
         Api.appgroupListall(params).then((res) => {
           if(res.code === 200) {
             this.applyGroupData = res.data
-            this.doSearchCreated(this.applyGroupData[0] || '')
+            // this.doSearchCreated(this.applyGroupData[0] || '')
           } else {
             this.$message({
               message: res.msg,

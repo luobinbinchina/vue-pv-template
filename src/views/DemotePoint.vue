@@ -212,6 +212,7 @@
           <el-form-item label="降级比例">
             <el-input v-model="downgradeRatio"></el-input>
           </el-form-item>
+          <el-form-item>%</el-form-item>
           <el-form-item>
             <el-tooltip class="item-warning" effect="dark" content="注意：触发策略后被降级的概率，取值[0-100],比如50表示50%的概率被降级掉" placement="bottom">
               <i class="el-icon-question"></i>
@@ -221,8 +222,8 @@
         <p class="of-application-group">
           <el-form-item label="状态">
             <el-select v-model="demotePointStatus" placeholder="">
-              <el-option :label="0" :value="0"></el-option>
-              <el-option :label="1" :value="1"></el-option>
+              <el-option label="开启-1" :value="1"></el-option>
+              <el-option label="关闭-0" :value="0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -320,8 +321,8 @@
         <p class="of-application-group">
           <el-form-item label="状态">
             <el-select v-model="editRowData.status" placeholder="">
-              <el-option :label="0" :value="0"></el-option>
-              <el-option :label="1" :value="1"></el-option>
+              <el-option label="开启-1" :value="1"></el-option>
+              <el-option label="关闭-0" :value="0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -341,26 +342,6 @@
     </el-dialog>
     <el-dialog title="高级配置" :visible.sync="dialogAdvancedConfig">
       <el-form :inline="true" class="edit-apply" label-position="right" label-width="140px">
-        <p class="add-apply-name">
-          <el-form-item label="访问量增长比率">
-            <el-input v-model="visitGrowthRate"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：每秒内能增长的访问量比例，例如15表示15%，280表示280%，这1秒访问量上线 = 上1秒访问量 + (1秒 * 访问量增长率 / 100)" placement="bottom">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-          </el-form-item>
-        </p>
-        <p class="add-apply-name">
-          <el-form-item label="访问量增长阈值">
-            <el-input v-model="visitGrowthThreshold"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：上一秒访问量超过这个值，访问量增长比率的限制才生效，-1表示不生效" placement="bottom">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-          </el-form-item>
-        </p>
         <p class="add-apply-name">
           <el-form-item label="异常量阈值">
             <el-input v-model="exceptionThreshold"></el-input>
@@ -431,9 +412,19 @@
             </el-tooltip>
           </el-form-item>
         </p>
+        <p class="add-apply-name">
+          <!-- <el-form-item label="令牌桶参数配置">
+            <el-input v-model="retryInterval"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip class="item-warning" effect="dark" content="注意：降级延长时间的重试请求的时间间隔，单位毫秒，-1表示不生效" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p> -->
         <p class="dialog-footer">
           <el-form-item>
-            <el-button type="primary" @click="closeDialogAdvancedConfig">取消</el-button>
+            <el-button type="primary" @click="closeDialogAdvancedConfig">基本配置</el-button>
             <el-button type="primary" @click="closeDialogAdvancedConfig">确定</el-button>
           </el-form-item>
         </p>
@@ -441,26 +432,6 @@
     </el-dialog>
     <el-dialog title="高级配置" :visible.sync="dialogEditAdvancedConfig">
       <el-form :inline="true" class="edit-apply" label-position="right" label-width="140px">
-        <p class="add-apply-name">
-          <el-form-item label="访问量增长比率">
-            <el-input v-model="editRowData.visitGrowthRate"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：每秒内能增长的访问量比例，例如15表示15%，280表示280%，这1秒访问量上线 = 上1秒访问量 + (1秒 * 访问量增长率 / 100)" placement="bottom">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-          </el-form-item>
-        </p>
-        <p class="add-apply-name">
-          <el-form-item label="访问量增长阈值">
-            <el-input v-model="editRowData.visitGrowthThreshold"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：上一秒访问量超过这个值，访问量增长比率的限制才生效，-1表示不生效" placement="bottom">
-              <i class="el-icon-question"></i>
-            </el-tooltip>
-          </el-form-item>
-        </p>
         <p class="add-apply-name">
           <el-form-item label="异常量阈值">
             <el-input v-model="editRowData.exceptionThreshold"></el-input>
@@ -531,9 +502,19 @@
             </el-tooltip>
           </el-form-item>
         </p>
+        <!-- <p class="add-apply-name">
+          <el-form-item label="令牌桶参数配置">
+            <el-input v-model="editRowData.retryInterval"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip class="item-warning" effect="dark" content="注意：降级延长时间的重试请求的时间间隔，单位毫秒，-1表示不生效" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p> -->
         <p class="dialog-footer">
           <el-form-item>
-            <el-button type="primary" @click="closeDialogEditAdvancedConfig">取消</el-button>
+            <el-button type="primary" @click="closeDialogEditAdvancedConfig">基本配置</el-button>
             <el-button type="primary" @click="closeDialogEditAdvancedConfig">确定</el-button>
           </el-form-item>
         </p>

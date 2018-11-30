@@ -1,7 +1,7 @@
 <template>
   <div class="aside">
     <div class="logo">
-      <span v-if="!isCollapse" class="text-span"><img class="logo-img-big" src="https://pt-starimg.didistatic.com/static/starimg/img/Bdh0QsChVE25WqqPZzF.png"></span>
+      <span v-if="!isCollapse" class="text-span"><img class="logo-img-big" src="https://pt-starimg.didistatic.com/static/starimg/img/X14XBQ3fAV1543570935761.png"></span>
       <span class="img-span" v-if="isCollapse"><img class="logo-img" src="https://pt-starimg.didistatic.com/static/starimg/img/kd09dBTlVw5uaosvhLS.png"></span>
     </div>
     <el-menu
@@ -13,7 +13,6 @@
       text-color="#ffffff"
       :collapse="isCollapse"
       :router="true"
-      :unique-opened="true"
       active-text-color="#009688">
       <el-submenu index="1">
         <template slot="title">
