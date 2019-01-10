@@ -28,6 +28,8 @@ export default {
     return new Promise(function (resolve, reject) {
       fetch(url, {
         method: 'GET',
+        mode: "no-cors",
+        credentials: 'include',
         headers: headers || commonHeader,
       })
         .then((response) => {
@@ -56,7 +58,9 @@ export default {
     return new Promise(function (resolve, reject) {
       fetch(url, {
         method: 'POST',
-        headers: headers || commonHeader,
+        mode: "cors",
+        credentials: 'include',
+        headers: commonHeader,
         body: JSON.stringify(formData),
       })
         .then((response) => {

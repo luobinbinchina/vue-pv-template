@@ -20,16 +20,13 @@
          </el-select>
        </el-form-item>
        <el-form-item label="策略组">
-         <el-input v-model="strategyGroup" placeholder=""></el-input>
-       </el-form-item>
-       <!-- <el-form-item>
-         <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
-       </el-form-item> -->
-       <el-form-item>
-         <el-button type="primary" @click="addStrategyGroup">新增策略组</el-button>
+         <el-input v-model="strategyGroup" placeholder="" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
        <el-form-item>
          <el-button type="primary" @click="doSearch">查找</el-button>
+       </el-form-item>
+       <el-form-item>
+         <el-button type="primary" @click="addStrategyGroup">新增策略组</el-button>
        </el-form-item>
      </el-form>
     </div>
@@ -54,8 +51,12 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="operatorId"
+          prop="operatorName"
           label="操作人">
+        </el-table-column>
+        <el-table-column
+          prop="creatorName"
+          label="创建人">
         </el-table-column>
         <el-table-column
           prop="modifiedTime"
@@ -67,7 +68,7 @@
           label="创建时间"
           width="180">
         </el-table-column>
-        <el-table-column label="操作" width="240">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -214,7 +215,6 @@
 
 <style lang="scss">
   .apply-name {
-    min-height: 600px;
   }
   .application-group-pagination {
     text-align: center;

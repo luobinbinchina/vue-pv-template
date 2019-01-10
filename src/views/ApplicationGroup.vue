@@ -1,15 +1,15 @@
 <template>
   <div class="application-group">
     <div class="application-group-search">
-     <el-form :inline="true">
+     <el-form :inline="true" @submit.native.prevent>
        <el-form-item label="应用组">
-         <el-input v-model="applicationGroup" placeholder=""></el-input>
-       </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
+         <el-input v-model="applicationGroup" placeholder="请输入关键字进行搜索" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
        <el-form-item>
          <el-button type="primary" @click="doSearch">查找</el-button>
+       </el-form-item>
+       <el-form-item>
+         <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
        </el-form-item>
      </el-form>
     </div>
@@ -24,8 +24,14 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="operatorId"
-          label="操作人">
+          prop="operatorName"
+          label="操作人"
+          width="120">
+        </el-table-column>
+        <el-table-column
+          prop="creatorName"
+          label="创建人"
+          width="120">
         </el-table-column>
         <el-table-column
           prop="modifiedTime"
@@ -37,7 +43,7 @@
           label="创建时间"
           width="180">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="left">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -102,7 +108,6 @@
 
 <style lang="scss">
   .application-group {
-    min-height: 600px;
   }
   .application-group .application-group-search .el-form-item {
     margin-right: 25px;
@@ -175,80 +180,6 @@
 /* eslint-disable */
   import Api from '../api/api'
   import TimeFormat from '../utils/timeFormat'
-  // let mockTableData = [
-  //   {
-  //     applicationGroupName: '青桔',
-  //     operatorTime: '2016-05-02',
-  //     operatorName: '小明',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '王者荣耀',
-  //     operatorTime: '2016-06-02',
-  //     operatorName: '小彬',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '今日头条',
-  //     operatorTime: '2016-07-02',
-  //     operatorName: '小杨',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '美团外卖',
-  //     operatorTime: '2016-08-02',
-  //     operatorName: '小小',
-  //     createTime: '2016-06-02'
-  //   },
-  //   {
-  //     applicationGroupName: '青桔',
-  //     operatorTime: '2016-05-02',
-  //     operatorName: '小明',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '王者荣耀',
-  //     operatorTime: '2016-06-02',
-  //     operatorName: '小彬',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '今日头条',
-  //     operatorTime: '2016-07-02',
-  //     operatorName: '小杨',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '美团外卖',
-  //     operatorTime: '2016-08-02',
-  //     operatorName: '小小',
-  //     createTime: '2016-06-02'
-  //   },
-  //   {
-  //     applicationGroupName: '青桔',
-  //     operatorTime: '2016-05-02',
-  //     operatorName: '小明',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '王者荣耀',
-  //     operatorTime: '2016-06-02',
-  //     operatorName: '小彬',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '今日头条',
-  //     operatorTime: '2016-07-02',
-  //     operatorName: '小杨',
-  //     createTime: '2016-04-02'
-  //   },
-  //   {
-  //     applicationGroupName: '美团外卖',
-  //     operatorTime: '2016-08-02',
-  //     operatorName: '小小',
-  //     createTime: '2016-06-02'
-  //   }
-  // ]
   export default {
     data () {
       return {
@@ -262,6 +193,8 @@
       }
     },
     created() {
+    },
+    mounted() {
       this.doSearch()
     },
     methods: {

@@ -23,22 +23,51 @@
            </p>
          </el-select>
        </el-form-item>
-       <el-form-item label="降级点">
-         <el-input v-model="form.demotePoint" placeholder=""></el-input>
-       </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="addDemotePoint">新增降级点</el-button>
+       <el-form-item label="">
+         <el-input v-model="form.demotePoint" placeholder="输入关键字搜索" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
        <el-form-item>
          <el-button type="primary" @click="doSearch">查找</el-button>
+       </el-form-item>
+       <el-form-item>
+         <el-button type="primary" @click="addDemotePoint">新增降级点</el-button>
        </el-form-item>
      </el-form>
     </div>
     <div class="application-group-table">
       <el-table
         :data="tableData"
-        border
         style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="访问量阈值">
+                <span>{{ props.row.visitThreshold }}</span>
+              </el-form-item>
+              <el-form-item label="并发量阈值">
+                <span>{{ props.row.concurrentThreshold }}</span>
+              </el-form-item>
+              <el-form-item label="异常量阈值">
+                <span>{{ props.row.exceptionThreshold }}</span>
+              </el-form-item>
+              <el-form-item label="异常率阈值">
+                <span>{{ props.row.exceptionRateThreshold }}</span>
+              </el-form-item>
+              <el-form-item label="异常率起始阈值">
+                <span>{{ props.row.exceptionRateStart }}</span>
+              </el-form-item>
+              <el-form-item label="超时时间阈值">
+                <span>{{ props.row.timeoutThreshold }}</span>
+              </el-form-item>
+              <el-form-item label="超时量阈值">
+                <span>{{ props.row.timeoutCountThreshold }}</span>
+              </el-form-item>
+              <el-form-item label="降级比例">
+                <span>{{ props.row.downgradeRate }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="appGroupName"
           label="应用组"
@@ -47,62 +76,27 @@
         <el-table-column
           prop="appName"
           label="应用名称"
-          width="100">
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="point"
           label="降级点"
-          width="100">
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="strategyGroupName"
           label="策略组"
-          width="100">
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
-          prop="visitThreshold"
-          label="访问量阈值"
+          prop="status"
+          label="状态"
           width="100">
-        </el-table-column>
-        <el-table-column
-          prop="concurrentThreshold"
-          label="并发量阈值"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="exceptionThreshold"
-          label="异常量阈值"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="exceptionRateThreshold"
-          label="异常率阈值"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="exceptionRateStart"
-          label="异常率起始阈值"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="timeoutThreshold"
-          label="超时时间阈值"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="timeoutCountThreshold"
-          label="超时量阈值"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="visitGrowthRate"
-          label="访问量增长比率"
-          width="100">
-        </el-table-column>
-        <el-table-column
-          prop="visitGrowthThreshold"
-          label="访问量增长阈值"
-          width="100">
+          <template slot-scope="scope">
+            <el-tag
+              :type="scope.row.status == 1 ? '' : 'info'"
+              disable-transitions>{{scope.row.status == 1 ? '开启' : '关闭'}}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
           prop="downgradeRate"
@@ -110,25 +104,32 @@
           width="100">
         </el-table-column>
         <el-table-column
-          prop="status"
-          label="状态"
+          prop="operatorName"
+          label="操作人"
           width="100">
+            <template slot-scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <p>操作时间: {{ scope.row.modifiedTime }}</p>
+                <div slot="reference" class="name-wrapper">
+                  <el-tag type="warning" color="#fff">{{scope.row.operatorName || '测试者'}}</el-tag>
+                </div>
+              </el-popover>
+            </template>
         </el-table-column>
         <el-table-column
-          prop="operatorId"
-          label="操作人">
+          prop="creatorName"
+          label="创建人"
+          width="100">
+          <template slot-scope="scope">
+              <el-popover trigger="hover" placement="top">
+                <p>创建时间: {{ scope.row.createTime }}</p>
+                <div slot="reference" class="name-wrapper">
+                  <el-tag color="#fff">{{scope.row.creatorName || '创建者'}}</el-tag>
+                </div>
+              </el-popover>
+            </template>
         </el-table-column>
-        <el-table-column
-          prop="modifiedTime"
-          label="更新时间"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          width="180">
-        </el-table-column>
-        <el-table-column label="操作" width="220">
+        <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -412,8 +413,8 @@
             </el-tooltip>
           </el-form-item>
         </p>
-        <p class="add-apply-name">
-          <!-- <el-form-item label="令牌桶参数配置">
+        <!-- <p class="add-apply-name">
+          <el-form-item label="令牌桶参数配置">
             <el-input v-model="retryInterval"></el-input>
           </el-form-item>
           <el-form-item>
@@ -525,11 +526,13 @@
 
 <style lang="scss">
   .apply-name {
-    min-height: 600px;
   }
   .application-group-pagination {
     text-align: center;
     margin-top: 10px;
+  }
+  .application-group-table {
+    position: relative;
   }
   .el-pagination.is-background .el-pager li:not(.disabled).active {
     border: none;
@@ -549,6 +552,26 @@
   }
   .dialog-footer {
     padding-left: 80px;
+  }
+  .demo-table-expand {
+    font-size: 0;
+    label {
+      width: 120px;
+      color: #409EFF;
+    }
+    .el-form-item {
+      margin-right: 0;
+      margin-bottom: 0;
+      width: 21%;
+      text-align: left;
+    }
+  }
+  .el-table__expanded-cell {
+    padding: 10px !important;
+    background-color: #fafafa;
+    &:hover {
+      background-color: #f2f5f9 !important;
+    }
   }
 </style>
 
@@ -606,7 +629,8 @@
           applyGroup: '',
           strategyGroup: '',
           demotePoint: ''
-        }
+        },
+        showAllExpand: true
       }
     },
     created () {

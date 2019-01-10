@@ -14,52 +14,44 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    // {
-    //   path: '/',
-    //   name: 'home',
-    //   component: Home
-    // },
     {
       path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+      name: '关于我们',
+      component: () => import('./views/About.vue')
     },
     {
       path: '/applicationGroup',
-      name: 'applicationGroup',
+      name: '应用组',
       component: ApplicationGroup
     },
     {
       path: '/applyName',
-      name: 'applyName',
+      name: '应用',
       component: ApplyName
     },
     {
       path: '/strategyGroup',
-      name: 'applyName',
+      name: '策略组',
       component: StrategyGroup
     },
     {
       path: '/demotePoint',
-      name: 'demotePoint',
+      name: '降级点',
       component: DemotePoint
     },
     {
       path: '/settingUp',
-      name: 'settingUp',
+      name: '设置',
       component: SettingUp
     },
     {
       path: '/downgradeChart',
-      name: 'downgradeChart',
+      name: '限流大盘',
       component: DowngradeChart
     },
     {
       path: '/',
-      name: 'redirect',
+      name: '首页',
       redirect: '/applicationGroup'
     }
   ]

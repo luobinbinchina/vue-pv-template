@@ -5,7 +5,7 @@
       <span class="img-span" v-if="isCollapse"><img class="logo-img" src="https://pt-starimg.didistatic.com/static/starimg/img/kd09dBTlVw5uaosvhLS.png"></span>
     </div>
     <el-menu
-      default-active="2"
+      :default-active="activeIndex"
       class="el-menu-vertical"
       @open="handleOpen"
       @close="handleClose"
@@ -13,7 +13,7 @@
       text-color="#ffffff"
       :collapse="isCollapse"
       :router="true"
-      active-text-color="#009688">
+      active-text-color="#d4a266">
       <el-submenu index="1">
         <template slot="title">
           <i class="iconfont adSys-yingyongAPP"></i>
@@ -22,10 +22,6 @@
         <el-menu-item index="/applicationGroup">应用组</el-menu-item>
         <el-menu-item index="/applyName">应用</el-menu-item>
       </el-submenu>
-      <!-- <el-menu-item index="2">
-        <i class="iconfont adSys-CPhezuo_o"></i>
-        <span slot="title">导航二</span>
-      </el-menu-item> -->
       <el-submenu index="2">
         <template slot="title">
           <i class="iconfont adSys-thunderbolt"></i>
@@ -62,7 +58,8 @@
     },
     data(){
       return {
-        logoClass: ''
+        logoClass: '',
+        activeIndex: ''
       }
     },
     watch: {
@@ -75,13 +72,12 @@
       }
     },
     mounted() {
+      this.activeIndex = this.$route.path;
     },
     methods: {
       handleOpen(key, keyPath) {
-        // console.log(key, keyPath);
       },
       handleClose(key, keyPath) {
-        // console.log(key, keyPath);
       }
     }
   }

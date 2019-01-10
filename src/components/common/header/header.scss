@@ -12,7 +12,7 @@
   .header-controller {
     overflow: hidden;
     padding: 0 15px;
-    line-height: 48px;
+    line-height: 45px;
     ul {
       font-size: 0;
       li {
@@ -66,5 +66,12 @@
       }
     }
 
+  }
+  .bread-crumb {
+    padding: 0 15px;
+    background-color: #ffffff;
+    .el-breadcrumb {
+      line-height: 50px;
+    }
   }
 }
