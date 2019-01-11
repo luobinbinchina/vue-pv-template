@@ -55,11 +55,9 @@ export default {
    * @returns {Promise}
    */
   post(url, formData, headers) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve, reject) { 
       fetch(url, {
         method: 'POST',
-        mode: "cors",
-        credentials: 'include',
         headers: commonHeader,
         body: JSON.stringify(formData),
       })
