@@ -20,8 +20,7 @@
         style="width: 100%">
         <el-table-column
           prop="appGroupName"
-          label="应用组"
-          width="180">
+          label="应用组">
         </el-table-column>
         <el-table-column
           prop="operatorName"
@@ -43,7 +42,7 @@
           label="创建时间"
           width="180">
         </el-table-column>
-        <el-table-column label="操作" align="left">
+        <el-table-column label="操作" width="180">
           <template slot-scope="scope">
             <el-button
               size="mini"
