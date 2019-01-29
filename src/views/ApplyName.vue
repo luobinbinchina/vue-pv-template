@@ -16,17 +16,20 @@
        <!-- <el-form-item>
          <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
        </el-form-item> -->
-        <el-form-item>
-         <el-button type="primary" @click="doSearch">查找</el-button>
-       </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="addApply">新增应用</el-button>
-       </el-form-item>
+       <div class="top-btn-right">
+         <el-form-item>
+           <el-button type="primary" @click="doSearch">查找</el-button>
+         </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="addApply">新增应用</el-button>
+         </el-form-item>
+       </div>
      </el-form>
     </div>
+    <p class="top-line"></p>
     <div class="application-group-table">
       <el-table
-        :data="tableData"
+        :data="tableData.data"
         border
         style="width: 100%">
         <el-table-column
@@ -83,8 +86,10 @@
     <div class="application-group-pagination">
       <el-pagination
         background
-        layout="prev, next"
+        small
+        layout="prev, jumper, next"
         @current-change="currentChangeData"
+        :total="tableData.total"
         >
       </el-pagination>
     </div>
@@ -104,7 +109,7 @@
             <el-input v-model="newAppName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用数字、字母和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -142,7 +147,7 @@
             <el-input v-model="editRowData.appName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用数字、字母和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -170,6 +175,14 @@
 <style lang="scss">
   .apply-name {
   }
+  .apply-name .top-line {
+    height: 1px;
+    background: #f6f6f6;
+    margin: 0 -20px;
+  }
+  .apply-name .application-group-table {
+    margin-top: 20px
+  }
   .application-group-pagination {
     text-align: center;
     margin-top: 10px;
@@ -185,6 +198,9 @@
   }
   .apply-name-search .el-button {
     padding: 10px 14px;
+  }
+  .apply-name-search .top-btn-right {
+    float: right;
   }
   .el-dialog__header {
     padding: 20px;
@@ -215,7 +231,12 @@
         dialogEditApply: false,
         dialogAddApply: false,
         applicationGroup: "",
-        tableData: [],
+        tableData: {
+          data: [],
+          ps: 8,
+          pn: 1,
+          total: null
+        },
         form: {
           applyName: '',
           applyGroup: '',
@@ -258,7 +279,12 @@
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,
@@ -330,8 +356,7 @@
       doSubmitAddApply() {
         let params = {
           appGroupName: this.addApplyGroup,
-          appName: this.newAppName,
-          operatorId: 183802
+          appName: this.newAppName
         }
         Api.appinfoAdd(params).then((res) => {
           if(res.code === 200) {
@@ -428,7 +453,7 @@
           appGroupName: appGroupName || this.form.applyGroup,
           applyName: this.form.applyName,
           page: page || 1,
-          pageSize: pageSize || 8
+          pageSize: pageSize || this.tableData.ps
         }
         return Api.appinfoListpage(params)
       },
@@ -440,7 +465,12 @@
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,
@@ -455,27 +485,27 @@
         })
       },
       //默认查询应用
-      doSearchCreated(appGroupName) {
-         this.applyListpage('', '', appGroupName).then((res) => {
-          if(res.code === 200) {
-            res.data.forEach(function(item){
-              item.createTime = TimeFormat.timeFormat(item.createTime)
-              item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
-            })
-            this.tableData = res.data
-          } else {
-            this.$message({
-              message: res.msg,
-              type: 'warning'
-            })
-          }
-        }).catch((err) => {
-          this.$message({
-            message: "查询应用失败",
-            type: 'warning'
-          })
-        })
-      }
+      // doSearchCreated(appGroupName) {
+      //    this.applyListpage('', '', appGroupName).then((res) => {
+      //     if(res.code === 200) {
+      //       res.data.forEach(function(item){
+      //         item.createTime = TimeFormat.timeFormat(item.createTime)
+      //         item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
+      //       })
+      //       this.tableData.data = res.data
+      //     } else {
+      //       this.$message({
+      //         message: res.msg,
+      //         type: 'warning'
+      //       })
+      //     }
+      //   }).catch((err) => {
+      //     this.$message({
+      //       message: "查询应用失败",
+      //       type: 'warning'
+      //     })
+      //   })
+      // }
     }
   }
 </script>

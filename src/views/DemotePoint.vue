@@ -1,5 +1,5 @@
 <template>
-  <div class="apply-name">
+  <div class="demote-point">
     <div class="apply-name-search">
      <el-form :inline="true">
        <el-form-item label="应用组">
@@ -26,17 +26,19 @@
        <el-form-item label="">
          <el-input v-model="form.demotePoint" placeholder="输入关键字搜索" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="doSearch">查找</el-button>
-       </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="addDemotePoint">新增降级点</el-button>
-       </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="doSearch">查找</el-button>
+         </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="addDemotePoint">新增降级点</el-button>
+         </el-form-item>
      </el-form>
     </div>
-    <div class="application-group-table">
+    <p class="top-line"></p>
+    <div class="demote-point-table">
       <el-table
-        :data="tableData"
+        :data="tableData.data"
+        border
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -89,6 +91,11 @@
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
+          prop="downgradeRate"
+          label="降级比例"
+          width="100">
+        </el-table-column>
+        <el-table-column
           prop="status"
           label="状态"
           width="100">
@@ -97,11 +104,6 @@
               :type="scope.row.status == 1 ? '' : 'info'"
               disable-transitions>{{scope.row.status == 1 ? '开启' : '关闭'}}</el-tag>
           </template>
-        </el-table-column>
-        <el-table-column
-          prop="downgradeRate"
-          label="降级比例"
-          width="100">
         </el-table-column>
         <el-table-column
           prop="operatorName"
@@ -145,8 +147,10 @@
     <div class="application-group-pagination">
       <el-pagination
         background
-        layout="prev, next"
+        small
+        layout="prev, jumper, next"
         @current-change="currentChangeData"
+        :total="tableData.total"
         >
       </el-pagination>
     </div>
@@ -525,13 +529,22 @@
 </template>
 
 <style lang="scss">
-  .apply-name {
+  .demote-point {
+  }
+  .demote-point .top-line {
+    height: 1px;
+    background: #f6f6f6;
+    margin: 0 -20px;
+  }
+  .demote-point .demote-point-table {
+    margin-top: 20px;
+    position: relative;
   }
   .application-group-pagination {
     text-align: center;
     margin-top: 10px;
   }
-  .application-group-table {
+  .demote-point-table {
     position: relative;
   }
   .el-pagination.is-background .el-pager li:not(.disabled).active {
@@ -590,7 +603,7 @@
         appNameData: [],
         addStrategyGroupData: [],
         addStrategyGroup: '',
-        demotePointStatus: '',
+        demotePointStatus: 1,
         timeoutCountThreshold: '',
         editConcurrencyThreshold: '',
         retryInterval: '',
@@ -607,7 +620,7 @@
         exceptionThreshold: '',
         exceptionRateStart: '',
         someApplyData: '',
-        downgradeRatio: '',
+        downgradeRatio: 100,
         concurrencyThreshold: '',
         accessThreshold: '',
         addDemotePointName: '',
@@ -622,7 +635,12 @@
         dialogEditApply: false,
         dialogAddApply: false,
         applicationGroup: "",
-        tableData: [],
+        tableData: {
+          data: [],
+          ps: 8,
+          pn: 1,
+          total: null
+        },
         applyGroupData: [],
         form: {
           appName: '',
@@ -661,7 +679,8 @@
       },
       //监听查询case下的应用组变化
       'form.applyGroup' (newVal, oldVal) {
-        this.form.appName = ''
+        this.form.appName = '';
+        this.form.strategyGroup = '';
         this.getAppinfoListall(newVal).then((res) => {
           if(res.code === 200) {
             this.appNameData = res.data
@@ -680,6 +699,7 @@
       },
       //监听查询状态下的应用变化
       'form.appName' (newVal, oldVal) {
+        if (!newVal) return;
         this.form.strategyGroup = ''
         this.strategygroupListall(this.form.applyGroup, newVal).then((res) => {
           if (res.code === 200) {
@@ -771,8 +791,7 @@
           timeoutThreshold: this.editRowData.timeoutThreshold, //超时时间阈值
           timeoutCountThreshold: this.editRowData.timeoutCountThreshold, //超时量阈值
           delayTime: this.editRowData.delayTime, //降级延长时间，单位ms
-          retryInterval: this.editRowData.retryInterval, //降级延长重试间隔，单位ms
-          operatorId: 183802
+          retryInterval: this.editRowData.retryInterval //降级延长重试间隔，单位ms
         }
         Api.pointStrategyEdit(params).then((res) => {
           if (res.code === 200) {
@@ -816,7 +835,12 @@
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,
@@ -881,8 +905,7 @@
           timeoutThreshold: this.timeoutThreshold, //超时时间阈值
           timeoutCountThreshold: this.timeoutCountThreshold, //超时量阈值
           delayTime: this.delayTime, //降级延长时间，单位ms
-          retryInterval: this.retryInterval, //降级延长重试间隔，单位ms
-          operatorId: 183802
+          retryInterval: this.retryInterval //降级延长重试间隔，单位ms
         }
         Api.pointStrategyAdd(params).then((res) => {
           if(res.code === 200) {
@@ -963,7 +986,7 @@
           strategyGroupName: this.form.strategyGroup,
           point: this.form.demotePoint,
           page: page || 1,
-          pageSize: pageSize || 8
+          pageSize: pageSize || this.tableData.ps
         }
         return Api.pointStrategyListpage(params)
       },
@@ -975,7 +998,12 @@
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,

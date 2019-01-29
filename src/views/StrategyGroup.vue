@@ -1,6 +1,6 @@
 <template>
-  <div class="apply-name">
-    <div class="apply-name-search">
+  <div class="strategy-group">
+    <div class="strategy-group-search">
      <el-form :inline="true">
        <!-- <el-form-item label="应用名称">
          <el-input v-model="form.applyName"  placeholder=""></el-input>
@@ -22,17 +22,20 @@
        <el-form-item label="策略组">
          <el-input v-model="strategyGroup" placeholder="" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="doSearch">查找</el-button>
-       </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="addStrategyGroup">新增策略组</el-button>
-       </el-form-item>
+       <div class="top-btn-right">
+         <el-form-item>
+           <el-button type="primary" @click="doSearch">查找</el-button>
+         </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="addStrategyGroup">新增策略组</el-button>
+         </el-form-item>
+       </div>
      </el-form>
     </div>
-    <div class="application-group-table">
+    <p class="top-line"></p>
+    <div class="strategy-group-table">
       <el-table
-        :data="tableData"
+        :data="tableData.data"
         border
         style="width: 100%">
         <el-table-column
@@ -87,8 +90,10 @@
     <div class="application-group-pagination">
       <el-pagination
         background
-        layout="prev, next"
+        small
+        layout="prev, jumper, next"
         @current-change="currentChangeData"
+        :total="tableData.total"
         >
       </el-pagination>
     </div>
@@ -117,7 +122,7 @@
             <el-input v-model="form.strategyGroupName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用汉字、数字、字母和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -142,7 +147,7 @@
       <el-form :inline="true" class="edit-apply" label-position="right" label-width="120px">
         <p class="of-application-group">
           <el-form-item label="原策略组名称">
-            <el-input v-model="editRowData.strategyGroupName"></el-input>
+            <el-input v-model="editRowData.strategyGroupName" disabled></el-input>
           </el-form-item>
         </p>
         <p class="edit-apply-name">
@@ -150,7 +155,7 @@
             <el-input v-model="editStrategyGroupName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用汉字、数字、字母和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -214,7 +219,12 @@
 </template>
 
 <style lang="scss">
-  .apply-name {
+  .strategy-group {
+  }
+  .strategy-group .top-line {
+    height: 1px;
+    background: #f6f6f6;
+    margin: 0 -20px;
   }
   .application-group-pagination {
     text-align: center;
@@ -229,8 +239,11 @@
   .el-table tr th {
     text-align: center;
   }
-  .apply-name-search .el-button {
+  .strategy-group-search .el-button {
     padding: 10px 14px;
+  }
+  .strategy-group-search .top-btn-right {
+    float: right;
   }
   .el-dialog__header {
     padding: 20px;
@@ -336,7 +349,12 @@
         dialogStrategyGroup: false,
         dialogEditStrategyGroup: false,
         applicationGroup: "",
-        tableData: [],
+        tableData: {
+          data: [],
+          ps: 8,
+          pn: 1,
+          total: null
+        },
         applyGroupData: [],
         form: {
           applyName: '',
@@ -458,8 +476,7 @@
         let params = {
           appGroupName: this.addApplyGroupName,
           appName: this.addApplyName,
-          strategyGroupName: this.form.strategyGroupName,
-          operatorId: 183802
+          strategyGroupName: this.form.strategyGroupName
         }
         Api.strategygroupAdd(params).then((res) => {
           if(res.code === 200) {
@@ -497,7 +514,12 @@
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,
@@ -598,7 +620,6 @@
       },
       handleEdit(row) {
         this.dialogEditStrategyGroup = true
-        console.log('row',row)
         this.editRowData = row
       },
       //删除策略组
@@ -647,7 +668,7 @@
           appName: this.applyName,
           strategyGroupName: this.strategyGroup,
           page: page || 1,
-          pageSize: pageSize || 8
+          pageSize: pageSize || this.tableData.ps
         }
         return Api.strategygroupListpage(params)
       },
@@ -660,8 +681,12 @@
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            console.log('appinfoListpage', res.data)
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,

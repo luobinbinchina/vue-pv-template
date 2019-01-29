@@ -5,17 +5,20 @@
        <el-form-item label="应用组">
          <el-input v-model="applicationGroup" placeholder="请输入关键字进行搜索" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="doSearch">查找</el-button>
-       </el-form-item>
-       <el-form-item>
-         <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
-       </el-form-item>
+       <div class="top-btn-right">
+         <el-form-item>
+           <el-button type="primary" @click="doSearch">查找</el-button>
+         </el-form-item>
+         <el-form-item>
+           <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
+         </el-form-item>
+       </div>
      </el-form>
     </div>
+    <p class="top-line"></p>
     <div class="application-group-table">
       <el-table
-        :data="tableData"
+        :data="tableData.data"
         border
         style="width: 100%">
         <el-table-column
@@ -58,8 +61,10 @@
     <div class="application-group-pagination">
       <el-pagination
         background
-        layout="prev, next"
+        small
+        layout="prev, jumper, next"
         @current-change="currentChangeData"
+        :total="tableData.total"
         >
       </el-pagination>
     </div>
@@ -68,7 +73,7 @@
         <p class="add-application-group-input">
           <span>应用组名称</span>
           <el-input v-model="applyGroupName"></el-input>
-          <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+          <el-tooltip class="item-warning" effect="dark" content="注意：只能使用数字、字母和-" placement="bottom">
             <i class="el-icon-question"></i>
           </el-tooltip>
         </p>
@@ -84,12 +89,12 @@
       <el-form :inline="true" class="edit-application-group" label-position="right" label-width="120px">
         <p class="edit-application-group-input">
           <span>原应用组名称</span>
-          <el-input v-model="editRowData.appGroupName"></el-input>
+          <el-input v-model="editRowData.appGroupName" disabled></el-input>
         </p>
         <p class="edit-application-group-input edit-application-group-input-new">
           <span>新应用组名称</span>
           <el-input v-model="newAppGroupName"></el-input>
-          <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+          <el-tooltip class="item-warning" effect="dark" content="注意：只能使用数字、字母和-" placement="bottom">
             <i class="el-icon-question"></i>
           </el-tooltip>
         </p>
@@ -108,8 +113,19 @@
 <style lang="scss">
   .application-group {
   }
+  .application-group .application-group-table {
+    margin-top: 20px;
+  }
+  .application-group .top-line {
+    height: 1px;
+    background: #f6f6f6;
+    margin: 0 -20px;
+  }
   .application-group .application-group-search .el-form-item {
     margin-right: 25px;
+  }
+  .application-group .application-group-search .top-btn-right {
+    float: right;
   }
   .application-group-pagination {
     text-align: center;
@@ -182,10 +198,15 @@
   export default {
     data () {
       return {
+        tableData: {
+          data: [],
+          ps: 8,
+          pn: 1,
+          total: null
+        },
         editRowData: {},
         newAppGroupName: '',
         applicationGroup: '',
-        tableData: [],
         dialogAddApplicationGroup: false,
         applyGroupName: '',
         dialogEditApplicationGroup: false
@@ -201,8 +222,7 @@
       doSubmitEditApplicationGroup() {
         let params = {
           appGroupName: this.editRowData.appGroupName,
-          newAppGroupName: this.newAppGroupName,
-          operatorId: 183802
+          newAppGroupName: this.newAppGroupName
         }
         Api.appgroupEdit(params).then((res) => {
           if (res.code === 200) {
@@ -276,7 +296,12 @@
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,
@@ -294,7 +319,7 @@
         let params = {
           appGroupName: this.applicationGroup,
           page: page || 1,
-          pageSize: pageSize || 8
+          pageSize: pageSize || this.tableData.ps
         }
         return Api.appgroupListpage(params)
       },
@@ -304,12 +329,17 @@
       //查询应用组
       doSearch() {
         this.appGroupListpage().then((res) => {
-          if(res.code === 200) {
+          if(res.code == 200) {
             res.data.forEach(function(item){
               item.createTime = TimeFormat.timeFormat(item.createTime)
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
-            this.tableData = res.data
+            this.tableData.data = res.data
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = this.tableData.data.length
+            } else {
+              this.tableData.total = null
+            }
           } else {
             this.$message({
               message: res.msg,
@@ -326,8 +356,7 @@
       //新增应用组
       doSubmitAddApplicationGroup() {
         let params = {
-          appGroupName: this.applyGroupName,
-          operatorId: new Date().getTime()
+          appGroupName: this.applyGroupName
         }
         Api.appgroupAdd(params).then((res) => {
           if (res.code === 200) {
