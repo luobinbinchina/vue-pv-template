@@ -58,8 +58,12 @@
     },
     data(){
       return {
-        logoClass: '',
-        activeIndex: ''
+        logoClass: ''
+      }
+    },
+    computed: {
+      activeIndex: function () {
+        return this.$route.path;
       }
     },
     watch: {
@@ -72,7 +76,6 @@
       }
     },
     mounted() {
-      this.activeIndex = this.$route.path;
     },
     methods: {
       handleOpen(key, keyPath) {
