@@ -1,44 +1,49 @@
 <template>
   <div class="demote-point">
-    <div class="apply-name-search">
-     <el-form :inline="true">
-       <el-form-item label="应用组">
-         <el-select v-model="form.applyGroup" placeholder="">
-           <p v-for="(item, index) in applyGroupData" :key="index">
-             <el-option :label="item" :value="item"></el-option>
-           </p>
-         </el-select>
-       </el-form-item>
-       <el-form-item label="应用名称">
-         <el-select v-model="form.appName" placeholder="">
-           <p v-for="(item, index) in appNameData" :key="index">
-             <el-option :label="item" :value="item"></el-option>
-           </p>
-         </el-select>
-       </el-form-item>
-       <el-form-item label="策略组">
-         <el-select v-model="form.strategyGroup" placeholder="">
-           <p v-for="(item, index) in strategyGroupData" :key="index">
-             <el-option :label="item" :value="item"></el-option>
-           </p>
-         </el-select>
-       </el-form-item>
-       <el-form-item label="">
-         <el-input v-model="form.demotePoint" placeholder="输入关键字搜索" @keyup.enter.native="doSearch"></el-input>
-       </el-form-item>
-         <el-form-item>
-           <el-button type="primary" @click="doSearch">查找</el-button>
+    <div class="demote-point-search">
+        <el-form :inline="true">
+          <div>
+            <el-form-item label="应用组" style="margin-right: 60px">
+              <el-select v-model="form.applyGroup" placeholder="">
+                <p v-for="(item, index) in applyGroupData" :key="index">
+                  <el-option :label="item" :value="item"></el-option>
+                </p>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="应用名称">
+              <el-select v-model="form.appName" placeholder="">
+                <p v-for="(item, index) in appNameData" :key="index">
+                  <el-option :label="item" :value="item"></el-option>
+                </p>
+              </el-select>
+            </el-form-item>
+        </div>
+       <div>
+         <el-form-item label="策略组" style="margin-right: 60px">
+           <el-select v-model="form.strategyGroup" placeholder="">
+             <p v-for="(item, index) in strategyGroupData" :key="index">
+               <el-option :label="item" :value="item"></el-option>
+             </p>
+           </el-select>
          </el-form-item>
-         <el-form-item>
-           <el-button type="primary" @click="addDemotePoint">新增降级点</el-button>
+         <el-form-item label="">
+           <el-input v-model="form.demotePoint" placeholder="输入关键字搜索" @keyup.enter.native="doSearch"></el-input>
          </el-form-item>
+         <span class="top-btn-right">
+           <el-form-item>
+             <el-button type="primary" @click="doSearch">查找</el-button>
+           </el-form-item>
+           <el-form-item>
+             <el-button type="primary" @click="addDemotePoint">新增降级点</el-button>
+           </el-form-item>
+         </span>
+       </div>
      </el-form>
     </div>
     <p class="top-line"></p>
     <div class="demote-point-table">
       <el-table
         :data="tableData.data"
-        border
         style="width: 100%">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -151,6 +156,7 @@
         layout="prev, jumper, next"
         @current-change="currentChangeData"
         :total="tableData.total"
+        :page-size="tableData.ps"
         >
       </el-pagination>
     </div>
@@ -188,7 +194,7 @@
             <el-input v-model="addDemotePointName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母、数字和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -288,7 +294,7 @@
             <el-input v-model="editRowData.point"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母、数字和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -556,7 +562,10 @@
   .el-table tr th {
     text-align: center;
   }
-  .apply-name-search .el-button {
+  .demote-point-search .top-btn-right {
+    float: right;
+  }
+  .demote-point-search .el-button {
     padding: 10px 14px;
   }
   .el-dialog__header {
@@ -639,7 +648,7 @@
           data: [],
           ps: 8,
           pn: 1,
-          total: null
+          total: 1
         },
         applyGroupData: [],
         form: {
@@ -829,7 +838,7 @@
       },
       //下一页前一页查询
       currentChangeData(page) {
-        this.applyListpage(page).then((res) => {
+        this.pointStrategyListpage(page).then((res) => {
           if(res.code === 200) {
             res.data.forEach(function(item){
               item.createTime = TimeFormat.timeFormat(item.createTime)
@@ -837,7 +846,7 @@
             })
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
-              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+              this.tableData.total = page * this.tableData.ps
             } else {
               this.tableData.total = null
             }

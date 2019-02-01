@@ -30,22 +30,24 @@
     <div class="application-group-table">
       <el-table
         :data="tableData.data"
-        border
         style="width: 100%">
         <el-table-column
           prop="appGroupName"
           label="应用组"
-          width="180">
+          width="180"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="appName"
           label="应用名称"
-          width="180">
+          width="180"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="strategyGroupName"
           label="当前使用的策略组"
-          width="180">
+          width="180"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="version"
@@ -55,20 +57,26 @@
         <el-table-column
           prop="operatorName"
           label="操作人">
+          <template slot-scope="scope">
+            <el-popover trigger="hover" placement="top">
+              <p>更新时间: {{ scope.row.modifiedTime }}</p>
+              <div slot="reference" class="name-wrapper">
+                <el-tag type="warning" color="#fff">{{scope.row.operatorName || '测试者'}}</el-tag>
+              </div>
+            </el-popover>
+          </template>
         </el-table-column>
         <el-table-column
           prop="creatorName"
           label="创建人">
-        </el-table-column>
-        <el-table-column
-          prop="modifiedTime"
-          label="更新时间"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          width="180">
+          <template slot-scope="scope">
+            <el-popover trigger="hover" placement="top">
+              <p>创建时间: {{ scope.row.createTime }}</p>
+              <div slot="reference" class="name-wrapper">
+                <el-tag color="#fff">{{scope.row.creatorName || '创建者'}}</el-tag>
+              </div>
+            </el-popover>
+          </template>
         </el-table-column>
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
@@ -90,6 +98,7 @@
         layout="prev, jumper, next"
         @current-change="currentChangeData"
         :total="tableData.total"
+        :page-size="tableData.ps"
         >
       </el-pagination>
     </div>
@@ -235,7 +244,7 @@
           data: [],
           ps: 8,
           pn: 1,
-          total: null
+          total: 1
         },
         form: {
           applyName: '',
@@ -281,7 +290,7 @@
             })
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
-              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+              this.tableData.total = page * this.tableData.ps
             } else {
               this.tableData.total = null
             }

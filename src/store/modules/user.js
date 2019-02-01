@@ -1,13 +1,11 @@
 import Login from '../../api/login'
 import commonApi from '../../api/common'
 import utils from '../../utils/utils'
-
 // initial state
 const state = {
   userInfo: {},
   ticket: ''
 }
-
 // getters
 const getters = {
   userInfo: (state, getters) => {
@@ -35,7 +33,7 @@ const actions = {
       if(data.code === 200) {
         actions.checkTicket({commit}, data.data.data.ticket)
       } else {
-        console.log('校验code失败', data.data)
+        // console.log('校验code失败', data.data)
       }
     })
   },
@@ -44,7 +42,7 @@ const actions = {
       if(data.code === 200) {
         actions.getUserInfo({commit}, ticket)
       } else {
-        console.log('校验ticket失败', data.data)
+        // console.log('校验ticket失败', data.data)
       }
     })
   },
@@ -54,7 +52,7 @@ const actions = {
         commit('setUser', data.data.data)
         location.search.indexOf('jumpto') > -1 ? location.href = location.origin + '/' : false;
       } else {
-        console.log('获取信息失败', data.data)
+        // console.log('获取信息失败', data.data)
       }
     })
   }

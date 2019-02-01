@@ -36,40 +36,50 @@
     <div class="strategy-group-table">
       <el-table
         :data="tableData.data"
-        border
         style="width: 100%">
         <el-table-column
           prop="appGroupName"
           label="应用组"
-          width="180">
+          width="180"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="appName"
           label="应用名称"
-          width="180">
+          width="180"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="strategyGroupName"
           label="策略组"
-          width="180">
+          width="180"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="operatorName"
-          label="操作人">
+          label="操作人"
+          >
+          <template slot-scope="scope">
+            <el-popover trigger="hover" placement="top">
+              <p>更新时间: {{ scope.row.modifiedTime }}</p>
+              <div slot="reference" class="name-wrapper">
+                <el-tag type="warning" color="#fff">{{scope.row.operatorName || '测试者'}}</el-tag>
+              </div>
+            </el-popover>
+          </template>
         </el-table-column>
         <el-table-column
           prop="creatorName"
-          label="创建人">
-        </el-table-column>
-        <el-table-column
-          prop="modifiedTime"
-          label="更新时间"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          width="180">
+          label="创建人"
+          >
+          <template slot-scope="scope">
+            <el-popover trigger="hover" placement="top">
+              <p>创建时间: {{ scope.row.createTime }}</p>
+              <div slot="reference" class="name-wrapper">
+                <el-tag color="#fff">{{scope.row.creatorName || '创建者'}}</el-tag>
+              </div>
+            </el-popover>
+          </template>
         </el-table-column>
         <el-table-column label="操作" width="220">
           <template slot-scope="scope">
@@ -94,6 +104,7 @@
         layout="prev, jumper, next"
         @current-change="currentChangeData"
         :total="tableData.total"
+        :page-size="tableData.ps"
         >
       </el-pagination>
     </div>
@@ -122,7 +133,7 @@
             <el-input v-model="form.strategyGroupName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用汉字、数字、字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用汉字、字母、数字和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -155,7 +166,7 @@
             <el-input v-model="editStrategyGroupName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用汉字、数字、字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用汉字、字母、数字和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -202,7 +213,7 @@
             <el-input v-model="newStrategyGroupName"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用字母和-" placement="bottom">
+            <el-tooltip class="item-warning" effect="dark" content="注意：只能使用汉字、字母、数字和-" placement="bottom">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </el-form-item>
@@ -225,6 +236,9 @@
     height: 1px;
     background: #f6f6f6;
     margin: 0 -20px;
+  }
+  .strategy-group .strategy-group-table {
+    margin-top: 20px;
   }
   .application-group-pagination {
     text-align: center;
@@ -353,7 +367,7 @@
           data: [],
           ps: 8,
           pn: 1,
-          total: null
+          total: 1
         },
         applyGroupData: [],
         form: {
@@ -516,7 +530,7 @@
             })
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
-              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+              this.tableData.total = page * this.tableData.ps
             } else {
               this.tableData.total = null
             }

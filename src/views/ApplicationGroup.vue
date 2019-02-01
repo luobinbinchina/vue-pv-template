@@ -19,11 +19,11 @@
     <div class="application-group-table">
       <el-table
         :data="tableData.data"
-        border
         style="width: 100%">
         <el-table-column
           prop="appGroupName"
-          label="应用组">
+          label="应用组"
+          :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="operatorName"
@@ -64,6 +64,7 @@
         small
         layout="prev, jumper, next"
         @current-change="currentChangeData"
+        :page-size="tableData.ps"
         :total="tableData.total"
         >
       </el-pagination>
@@ -290,6 +291,7 @@
         });
       },
       currentChangeData(page) {
+        console.log('page', page)
         this.appGroupListpage(page).then((res) => {
           if(res.code === 200) {
             res.data.forEach(function(item){
@@ -298,7 +300,7 @@
             })
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
-              this.tableData.total = (page - 1) * this.tableData.ps + this.tableData.data.length
+              this.tableData.total = page * this.tableData.ps
             } else {
               this.tableData.total = null
             }
