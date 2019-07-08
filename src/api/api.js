@@ -111,5 +111,9 @@ export default {
   //分页查询降级点策略
   pointStrategyListpage: (params) => {
     return _fetch.post(apiHost + '/opensds/pointstrategy/listpage', params)
+  },
+  // 查询应用当前生效策略组
+  querystrategygrouptips: (params) => {
+    return _fetch.post(apiHost + '/opensds/pointstrategy/querystrategygrouptips ', params)
   }
 };

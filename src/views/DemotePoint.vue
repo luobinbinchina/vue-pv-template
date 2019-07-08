@@ -11,7 +11,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="应用名称">
-              <el-select v-model="form.appName" placeholder="">
+              <el-select v-model="form.appName" placeholder="" @change="querystrategygrouptips">
                 <p v-for="(item, index) in appNameData" :key="index">
                   <el-option :label="item" :value="item"></el-option>
                 </p>
@@ -26,19 +26,22 @@
              </p>
            </el-select>
          </el-form-item>
-         <el-form-item label="">
-           <el-input v-model="form.demotePoint" placeholder="输入关键字搜索" @keyup.enter.native="doSearch"></el-input>
+         <el-form-item label="输入搜索">
+           <el-input v-model="form.demotePoint" placeholder="输入降级点名称搜索" @keyup.enter.native="doSearch"></el-input>
          </el-form-item>
          <span class="top-btn-right">
            <el-form-item>
              <el-button type="primary" @click="doSearch">查找</el-button>
            </el-form-item>
            <el-form-item>
-             <el-button type="primary" @click="addDemotePoint">新增降级点</el-button>
+             <el-button type="primary" @click="addDemotePoint">新增降级点策略</el-button>
            </el-form-item>
          </span>
        </div>
      </el-form>
+    </div>
+    <div v-if="!!strategygrouptips" class="strategy-group-tips">
+      <el-tag type="danger">{{ strategygrouptips }}</el-tag>
     </div>
     <p class="top-line"></p>
     <div class="demote-point-table">
@@ -69,8 +72,11 @@
               <el-form-item label="超时量阈值">
                 <span>{{ props.row.timeoutCountThreshold }}</span>
               </el-form-item>
-              <el-form-item label="降级比例">
-                <span>{{ props.row.downgradeRate }}</span>
+              <el-form-item label="每秒生成令牌数">
+                <span>{{ props.row.tokenBucketGeneratedTokensInSecond }}</span>
+              </el-form-item>
+              <el-form-item label="令牌桶容量">
+                <span>{{ props.row.tokenBucketSize }}</span>
               </el-form-item>
             </el-form>
           </template>
@@ -160,7 +166,7 @@
         >
       </el-pagination>
     </div>
-    <el-dialog title="新增降级点" :visible.sync="dialogAddDemotePoint">
+    <el-dialog title="新增降级点策略" :visible.sync="dialogAddDemotePoint">
       <el-form :inline="true" class="add-apply" label-position="right" label-width="140px">
         <p class="of-application-group">
           <el-form-item label="应用组">
@@ -354,6 +360,26 @@
     <el-dialog title="高级配置" :visible.sync="dialogAdvancedConfig">
       <el-form :inline="true" class="edit-apply" label-position="right" label-width="140px">
         <p class="add-apply-name">
+          <el-form-item label="每秒生成令牌数">
+            <el-input v-model="tokenBucketGeneratedTokensInSecond"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip class="item-warning" effect="dark" content="注意：令牌桶每个1秒能生成多少个令牌，-1表示不生效" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p>
+        <p class="add-apply-name">
+          <el-form-item label="令牌桶容量">
+            <el-input v-model="tokenBucketSize"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip class="item-warning" effect="dark" content="注意：令牌桶最多能存储多少个令牌，-1表示不生效" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p>
+        <p class="add-apply-name">
           <el-form-item label="异常量阈值">
             <el-input v-model="exceptionThreshold"></el-input>
           </el-form-item>
@@ -443,6 +469,26 @@
     </el-dialog>
     <el-dialog title="高级配置" :visible.sync="dialogEditAdvancedConfig">
       <el-form :inline="true" class="edit-apply" label-position="right" label-width="140px">
+        <p class="add-apply-name">
+          <el-form-item label="每秒生成令牌数">
+            <el-input v-model="editRowData.tokenBucketGeneratedTokensInSecond"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip class="item-warning" effect="dark" content="注意：令牌桶每个1秒能生成多少个令牌，-1表示不生效" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p>
+        <p class="add-apply-name">
+          <el-form-item label="令牌桶容量">
+            <el-input v-model="editRowData.tokenBucketSize"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-tooltip class="item-warning" effect="dark" content="注意：令牌桶最多能存储多少个令牌，-1表示不生效" placement="bottom">
+              <i class="el-icon-question"></i>
+            </el-tooltip>
+          </el-form-item>
+        </p>
         <p class="add-apply-name">
           <el-form-item label="异常量阈值">
             <el-input v-model="editRowData.exceptionThreshold"></el-input>
@@ -537,6 +583,11 @@
 <style lang="scss">
   .demote-point {
   }
+  .strategy-group-tips {
+    color: red;
+    padding-bottom: 10px;
+    font-size: 14px;
+  }
   .demote-point .top-line {
     height: 1px;
     background: #f6f6f6;
@@ -578,14 +629,14 @@
   .demo-table-expand {
     font-size: 0;
     label {
-      width: 120px;
+      width: 130px;
       color: #409EFF;
     }
     .el-form-item {
       margin-right: 0;
       margin-bottom: 0;
-      width: 21%;
-      text-align: left;
+      width: 33%;
+      text-align: center;
     }
   }
   .el-table__expanded-cell {
@@ -628,6 +679,8 @@
         timeoutThreshold: '',
         exceptionThreshold: '',
         exceptionRateStart: '',
+        tokenBucketGeneratedTokensInSecond: -1,
+        tokenBucketSize: -1,
         someApplyData: '',
         downgradeRatio: 100,
         concurrencyThreshold: '',
@@ -657,7 +710,8 @@
           strategyGroup: '',
           demotePoint: ''
         },
-        showAllExpand: true
+        showAllExpand: true,
+        strategygrouptips: ''
       }
     },
     created () {
@@ -767,6 +821,26 @@
       }
     },
     methods: {
+      querystrategygrouptips () {
+        Api.querystrategygrouptips({
+          appGroupName: this.form.applyGroup,
+          appName: this.form.appName
+        }).then((res) => {
+          if(res.code === 200) {
+            this.strategygrouptips = res.data
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'warning'
+            })
+          }
+        }).catch((err) => {
+          this.$message({
+            message: "获取应用策略组失败",
+            type: 'warning'
+          })
+        })
+      },
       closeDialogEditDemotePoint () {
         this.dialogEditDemotePoint = false
       },
@@ -797,6 +871,8 @@
           exceptionThreshold: this.editRowData.exceptionThreshold, // 异常量阈值
           exceptionRateThreshold: this.editRowData.exceptionRateThreshold, //异常率阈值
           exceptionRateStart: this.editRowData.exceptionRateStart, // 异常率起始阈值
+          tokenBucketGeneratedTokensInSecond: this.editRowData.tokenBucketGeneratedTokensInSecond,
+          tokenBucketSize: this.editRowData.tokenBucketSize,
           timeoutThreshold: this.editRowData.timeoutThreshold, //超时时间阈值
           timeoutCountThreshold: this.editRowData.timeoutCountThreshold, //超时量阈值
           delayTime: this.editRowData.delayTime, //降级延长时间，单位ms
@@ -911,6 +987,8 @@
           exceptionThreshold: this.exceptionThreshold, // 异常量阈值
           exceptionRateThreshold: this.exceptionRateThreshold, //异常率阈值
           exceptionRateStart: this.exceptionRateStart, // 异常率起始阈值
+          tokenBucketGeneratedTokensInSecond: this.tokenBucketGeneratedTokensInSecond,
+          tokenBucketSize: this.tokenBucketSize,
           timeoutThreshold: this.timeoutThreshold, //超时时间阈值
           timeoutCountThreshold: this.timeoutCountThreshold, //超时量阈值
           delayTime: this.delayTime, //降级延长时间，单位ms
