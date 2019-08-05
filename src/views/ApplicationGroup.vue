@@ -9,6 +9,8 @@
          <el-form-item>
            <el-button type="primary" size="medium" icon="el-icon-search" @click="doSearch">查 找</el-button>
          </el-form-item>
+       </div>
+       <div class="top-btn-right">
          <el-form-item>
            <el-button type="primary" size="medium" icon="el-icon-plus" @click="addApplicationGroup">新增应用组</el-button>
          </el-form-item>
@@ -22,30 +24,27 @@
         <el-table-column
           prop="appGroupName"
           label="应用组"
-          width="140"
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="operatorName"
-          label="更新人"
-          width="140">
+          label="更新人">
         </el-table-column>
         <el-table-column
           prop="creatorName"
-          label="创建人"
-          width="140">
+          label="创建人">
         </el-table-column>
         <el-table-column
           prop="modifiedTime"
           label="更新时间"
-          width="180">
+          >
         </el-table-column>
         <el-table-column
           prop="createTime"
           label="创建时间"
-          width="180">
+          >
         </el-table-column>
-        <el-table-column label="操作" min-width="180">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -60,10 +59,9 @@
       <div class="application-group-pagination">
         <el-pagination
           background
-          small
           layout="prev, next"
           @current-change="currentChangeData"
-          :page-size="tableData.ps"
+          :current-page="tableData.pn"
           :total="tableData.total"
           >
         </el-pagination>
@@ -113,82 +111,75 @@
 
 <style lang="scss">
   .application-group {
-  }
-  .application-group .application-group-table {
-    margin-top: 20px;
-  }
-
-  .application-group .application-group-search .el-form-item {
-    margin-right: 25px;
-    margin-bottom: 0;
-  }
-  .application-group .application-group-search .top-btn-left {
-    float: left;
-  }
-  .application-group .application-group-search .top-btn-right {
-    float: right;
-  }
-  .application-group-pagination {
-    text-align: center;
-    margin-top: 20px;
-  }
-  .el-pagination.is-background .el-pager li:not(.disabled).active {
-    border: none;
-  }
-  .el-table--enable-row-transition .el-table__body td {
-    text-align: center;
-  }
-  .el-table tr th {
-    text-align: center;
-  }
-  .add-application-group .add-application-group-input {
-    padding-left: 20px
-  }
-  .add-application-group .add-application-group-input .el-input {
-    width: 40%;
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  .add-application-group .add-application-group-input .el-input .el-input__inner {
-    height: 35px;
-  }
-  .add-application-group .add-application-group-btn {
-    margin-top: 40px;
-  }
-  //修改弹框样式
-  .edit-application-group .edit-application-group-input {
-    padding-left: 20px
-  }
-  .edit-application-group .edit-application-group-input .el-input {
-    width: 40%;
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-  .edit-application-group .edit-application-group-input .el-input .el-input__inner {
-    height: 35px;
-  }
-  .edit-application-group .edit-application-group-input-new {
-    margin-top: 15px;
-  }
-  .edit-application-group .edit-application-group-btn {
-    margin-top: 40px;
-  }
-  .el-table td {
-    padding: 8px 0;
-  }
-  .el-input__inner {
-    height: 34px;
-    line-height: 34px;
-  }
-  .application-group-search .el-button {
-    padding: 10px 14px;
-  }
-  .el-dialog__header {
-    padding: 20px;
-    border-bottom: 1px solid #dcdfe6;
-  }
-  .dialog-footer {
-    padding-left: 80px;
+    .application-group-table {
+      margin-top: 20px;
+    }
+    .application-group-search .el-form-item {
+      margin-right: 25px;
+      margin-bottom: 0;
+    }
+    .application-group-search .top-btn-left {
+      float: left;
+    }
+    .application-group-search .top-btn-right {
+      float: right;
+    }
+    .application-group-pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled).active {
+      border: none;
+    }
+    .add-application-group .add-application-group-input {
+      padding-left: 20px
+    }
+    .add-application-group .add-application-group-input .el-input {
+      width: 40%;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+    .add-application-group .add-application-group-input .el-input .el-input__inner {
+      height: 35px;
+    }
+    .add-application-group .add-application-group-btn {
+      margin-top: 40px;
+    }
+    //修改弹框样式
+    .edit-application-group .edit-application-group-input {
+      padding-left: 20px
+    }
+    .edit-application-group .edit-application-group-input .el-input {
+      width: 40%;
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+    .edit-application-group .edit-application-group-input .el-input .el-input__inner {
+      height: 35px;
+    }
+    .edit-application-group .edit-application-group-input-new {
+      margin-top: 15px;
+    }
+    .edit-application-group .edit-application-group-btn {
+      margin-top: 40px;
+    }
+    .el-table td {
+      padding: 8px 0;
+    }
+    .el-input__inner {
+      height: 34px;
+      line-height: 34px;
+    }
+    .application-group-search .el-button {
+      padding: 10px 14px;
+    }
+    .el-dialog__header {
+      padding: 20px;
+      border-bottom: 1px solid #dcdfe6;
+    }
+    .dialog-footer {
+      padding-left: 80px;
+    }
   }
 </style>
 
@@ -292,6 +283,7 @@
       },
       currentChangeData(page) {
         console.log('page', page)
+        console.log('this.tableData.total', this.tableData.total)
         this.appGroupListpage(page).then((res) => {
           if(res.code === 200) {
             res.data.forEach(function(item){
@@ -301,8 +293,6 @@
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = page * this.tableData.ps
-            } else {
-              this.tableData.total = null
             }
           } else {
             this.$message({
@@ -330,6 +320,7 @@
       },
       //查询应用组
       doSearch() {
+        this.tableData.total = null
         this.appGroupListpage().then((res) => {
           if(res.code == 200) {
             res.data.forEach(function(item){
@@ -337,11 +328,7 @@
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
             this.tableData.data = res.data
-            if (this.tableData.data.length < this.tableData.ps) {
-              this.tableData.total = this.tableData.data.length
-            } else {
-              this.tableData.total = null
-            }
+            console.log('this.tableData.total', this.tableData.total)
           } else {
             this.$message({
               message: res.msg,

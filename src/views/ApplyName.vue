@@ -33,25 +33,21 @@
         <el-table-column
           prop="appGroupName"
           label="应用组"
-          width="180"
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="appName"
           label="应用名称"
-          width="180"
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="strategyGroupName"
-          label="当前使用的策略组"
-          width="180"
+          label="当前策略组"
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="version"
-          label="版本"
-          width="180">
+          label="版本">
         </el-table-column>
         <el-table-column
           prop="operatorName"
@@ -92,7 +88,6 @@
        <div class="application-group-pagination">
         <el-pagination
           background
-          small
           layout="prev, next"
           @current-change="currentChangeData"
           :total="tableData.total"
@@ -183,40 +178,40 @@
 
 <style lang="scss">
   .apply-name {
-  }
-  .apply-name .top-line {
-    height: 1px;
-    background: #f6f6f6;
-    margin: 0 -20px;
-  }
-  .apply-name .application-group-table {
-    margin-top: 20px
-  }
-  .application-group-pagination {
-    text-align: center;
-    margin-top: 20px;
-  }
-  .el-pagination.is-background .el-pager li:not(.disabled).active {
-    border: none;
-  }
-  .el-table--enable-row-transition .el-table__body td {
-    text-align: center;
-  }
-  .el-table tr th {
-    text-align: center;
-  }
-  .apply-name-search .el-button {
-    padding: 10px 14px;
-  }
-  .apply-name-search .top-btn-right {
-    float: right;
-  }
-  .el-dialog__header {
-    padding: 20px;
-    border-bottom: 1px solid #dcdfe6;
-  }
-  .dialog-footer {
-    padding-left: 80px;
+    .top-line {
+      height: 1px;
+      background: #f6f6f6;
+      margin: 0 -20px;
+    }
+    .application-group-table {
+      margin-top: 20px
+    }
+    .application-group-pagination {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .el-pagination.is-background .el-pager li:not(.disabled).active {
+      border: none;
+    }
+    .el-table--enable-row-transition .el-table__body td {
+      text-align: center;
+    }
+    .el-table tr th {
+      text-align: center;
+    }
+    .apply-name-search .el-button {
+      padding: 10px 14px;
+    }
+    .apply-name-search .top-btn-right {
+      float: right;
+    }
+    .el-dialog__header {
+      padding: 20px;
+      border-bottom: 1px solid #dcdfe6;
+    }
+    .dialog-footer {
+      padding-left: 80px;
+    }
   }
 </style>
 
@@ -244,7 +239,7 @@
           data: [],
           ps: 8,
           pn: 1,
-          total: 1
+          total: null
         },
         form: {
           applyName: '',
@@ -278,6 +273,7 @@
     },
     created () {
       this.appgroupListall()
+      this.currentChangeData()
     },
     methods: {
       //下一页前一页查询
@@ -291,8 +287,6 @@
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = page * this.tableData.ps
-            } else {
-              this.tableData.total = null
             }
           } else {
             this.$message({
@@ -475,10 +469,11 @@
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
             this.tableData.data = res.data
+            console.log('this.tableData.total', this.tableData.total)
+            console.log('this.tableData.ps', this.tableData.ps)
+            console.log('this.tableData.data.length', this.tableData.data.length)
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = this.tableData.data.length
-            } else {
-              this.tableData.total = null
             }
           } else {
             this.$message({
@@ -492,29 +487,7 @@
             type: 'warning'
           })
         })
-      },
-      //默认查询应用
-      // doSearchCreated(appGroupName) {
-      //    this.applyListpage('', '', appGroupName).then((res) => {
-      //     if(res.code === 200) {
-      //       res.data.forEach(function(item){
-      //         item.createTime = TimeFormat.timeFormat(item.createTime)
-      //         item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
-      //       })
-      //       this.tableData.data = res.data
-      //     } else {
-      //       this.$message({
-      //         message: res.msg,
-      //         type: 'warning'
-      //       })
-      //     }
-      //   }).catch((err) => {
-      //     this.$message({
-      //       message: "查询应用失败",
-      //       type: 'warning'
-      //     })
-      //   })
-      // }
+      }
     }
   }
 </script>
