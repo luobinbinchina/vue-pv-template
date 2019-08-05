@@ -31,9 +31,9 @@
         <el-menu-item index="/demotePoint">降级点策略</el-menu-item>
         <el-menu-item index="/demotePointResponse">降级返回值</el-menu-item>
       </el-submenu>
-      <el-menu-item index="/downgradeChart">
+      <el-menu-item index="/">
         <i class="iconfont adSys-barchart"></i>
-        <span slot="title">限流降级大盘</span>
+        <span slot="title"> <a href="http://monitor.xiaojukeji.com/#/odin/screen/14651" target="_blank" style="color: white">限流降级大盘</a></span>
       </el-menu-item>
       <el-menu-item index="/settingUp">
         <i class="iconfont adSys-setup_fill"></i>

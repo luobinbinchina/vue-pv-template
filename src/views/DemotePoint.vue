@@ -1,6 +1,6 @@
 <template>
   <div class="demote-point">
-    <div class="demote-point-search">
+    <div class="demote-point-search b-wrapper">
         <el-form :inline="true">
           <div>
             <el-form-item label="应用组" style="margin-right: 60px">
@@ -43,8 +43,7 @@
     <div v-if="!!strategygrouptips" class="strategy-group-tips">
       <el-tag type="danger">{{ strategygrouptips }}</el-tag>
     </div>
-    <p class="top-line"></p>
-    <div class="demote-point-table">
+    <div class="demote-point-table b-wrapper">
       <el-table
         :data="tableData.data"
         style="width: 100%">
@@ -118,7 +117,7 @@
         </el-table-column>
         <el-table-column
           prop="operatorName"
-          label="操作人"
+          label="更新人"
           width="100">
             <template slot-scope="scope">
               <el-popover trigger="hover" placement="top">
@@ -154,18 +153,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="application-group-pagination">
+        <el-pagination
+          background
+          small
+          layout="prev, next"
+          @current-change="currentChangeData"
+          :total="tableData.total"
+          :page-size="tableData.ps"
+          >
+        </el-pagination>
+      </div>
     </div>
-    <div class="application-group-pagination">
-      <el-pagination
-        background
-        small
-        layout="prev, jumper, next"
-        @current-change="currentChangeData"
-        :total="tableData.total"
-        :page-size="tableData.ps"
-        >
-      </el-pagination>
-    </div>
+    
     <el-dialog title="新增降级点策略" :visible.sync="dialogAddDemotePoint">
       <el-form :inline="true" class="add-apply" label-position="right" label-width="140px">
         <p class="of-application-group">
@@ -599,7 +599,7 @@
   }
   .application-group-pagination {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 20px;
   }
   .demote-point-table {
     position: relative;

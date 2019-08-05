@@ -36,10 +36,10 @@
       margin-left: 220px;
       transition: all .3s ease-in-out;
       .main {
-        padding: 30px 20px;
-        background-color: #ffffff;
-        border-radius: 2px;
-        box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+        // padding: 30px 20px;
+        // background-color: #ffffff;
+        // border-radius: 2px;
+        // box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
       }
     }
     .footer-wrapper {

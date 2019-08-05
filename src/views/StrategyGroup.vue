@@ -1,6 +1,6 @@
 <template>
   <div class="strategy-group">
-    <div class="strategy-group-search">
+    <div class="strategy-group-search b-wrapper">
      <el-form :inline="true">
        <!-- <el-form-item label="应用名称">
          <el-input v-model="form.applyName"  placeholder=""></el-input>
@@ -32,8 +32,7 @@
        </div>
      </el-form>
     </div>
-    <p class="top-line"></p>
-    <div class="strategy-group-table">
+    <div class="strategy-group-table b-wrapper">
       <el-table
         :data="tableData.data"
         style="width: 100%">
@@ -57,7 +56,7 @@
         </el-table-column>
         <el-table-column
           prop="operatorName"
-          label="操作人"
+          label="更新人"
           >
           <template slot-scope="scope">
             <el-popover trigger="hover" placement="top">
@@ -96,18 +95,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="application-group-pagination">
+        <el-pagination
+          background
+          small
+          layout="prev, next"
+          @current-change="currentChangeData"
+          :total="tableData.total"
+          :page-size="tableData.ps"
+          >
+        </el-pagination>
+      </div>
     </div>
-    <div class="application-group-pagination">
-      <el-pagination
-        background
-        small
-        layout="prev, jumper, next"
-        @current-change="currentChangeData"
-        :total="tableData.total"
-        :page-size="tableData.ps"
-        >
-      </el-pagination>
-    </div>
+   
     <el-dialog title="新增策略组" :visible.sync="dialogStrategyGroup">
       <el-form :inline="true" class="add-strategy-group" label-position="right" label-width="120px">
         <p class="of-application-group">
@@ -242,7 +242,7 @@
   }
   .application-group-pagination {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 20px;
   }
   .el-pagination.is-background .el-pager li:not(.disabled).active {
     border: none;

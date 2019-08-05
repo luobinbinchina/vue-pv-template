@@ -1,39 +1,39 @@
 <template>
   <div class="application-group">
-    <div class="application-group-search">
+    <div class="application-group-search b-wrapper">
      <el-form :inline="true" @submit.native.prevent>
-       <el-form-item label="应用组">
+       <el-form-item label="应用组" class="top-btn-left">
          <el-input v-model="applicationGroup" placeholder="请输入关键字进行搜索" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
-       <div class="top-btn-right">
+       <div class="top-btn-left">
          <el-form-item>
-           <el-button type="primary" @click="doSearch">查找</el-button>
+           <el-button type="primary" size="medium" icon="el-icon-search" @click="doSearch">查 找</el-button>
          </el-form-item>
          <el-form-item>
-           <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
+           <el-button type="primary" size="medium" icon="el-icon-plus" @click="addApplicationGroup">新增应用组</el-button>
          </el-form-item>
        </div>
      </el-form>
     </div>
-    <p class="top-line"></p>
-    <div class="application-group-table">
+    <div class="application-group-table b-wrapper">
       <el-table
         :data="tableData.data"
         style="width: 100%">
         <el-table-column
           prop="appGroupName"
           label="应用组"
+          width="140"
           :show-overflow-tooltip="true">
         </el-table-column>
         <el-table-column
           prop="operatorName"
-          label="操作人"
-          width="120">
+          label="更新人"
+          width="140">
         </el-table-column>
         <el-table-column
           prop="creatorName"
           label="创建人"
-          width="120">
+          width="140">
         </el-table-column>
         <el-table-column
           prop="modifiedTime"
@@ -45,7 +45,7 @@
           label="创建时间"
           width="180">
         </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" min-width="180">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -57,18 +57,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="application-group-pagination">
+        <el-pagination
+          background
+          small
+          layout="prev, next"
+          @current-change="currentChangeData"
+          :page-size="tableData.ps"
+          :total="tableData.total"
+          >
+        </el-pagination>
+      </div>
     </div>
-    <div class="application-group-pagination">
-      <el-pagination
-        background
-        small
-        layout="prev, jumper, next"
-        @current-change="currentChangeData"
-        :page-size="tableData.ps"
-        :total="tableData.total"
-        >
-      </el-pagination>
-    </div>
+    
     <el-dialog title="新增应用组" :visible.sync="dialogAddApplicationGroup">
       <el-form :inline="true" class="add-application-group" label-position="right" label-width="120px">
         <p class="add-application-group-input">
@@ -107,7 +108,6 @@
         </p>
       </el-form>
     </el-dialog>
-
   </div>
 </template>
 
@@ -117,20 +117,20 @@
   .application-group .application-group-table {
     margin-top: 20px;
   }
-  .application-group .top-line {
-    height: 1px;
-    background: #f6f6f6;
-    margin: 0 -20px;
-  }
+
   .application-group .application-group-search .el-form-item {
     margin-right: 25px;
+    margin-bottom: 0;
+  }
+  .application-group .application-group-search .top-btn-left {
+    float: left;
   }
   .application-group .application-group-search .top-btn-right {
     float: right;
   }
   .application-group-pagination {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 20px;
   }
   .el-pagination.is-background .el-pager li:not(.disabled).active {
     border: none;
