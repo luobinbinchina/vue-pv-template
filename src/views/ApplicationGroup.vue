@@ -320,7 +320,6 @@
       },
       //查询应用组
       doSearch() {
-        this.tableData.total = null
         this.appGroupListpage().then((res) => {
           if(res.code == 200) {
             res.data.forEach(function(item){
@@ -329,6 +328,11 @@
             })
             this.tableData.data = res.data
             console.log('this.tableData.total', this.tableData.total)
+            if (this.tableData.data.length < this.tableData.ps) {
+              this.tableData.total = this.tableData.data.length
+            } else {
+              this.tableData.total = 100
+            }
           } else {
             this.$message({
               message: res.msg,

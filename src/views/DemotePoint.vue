@@ -1,15 +1,18 @@
 <template>
   <div class="demote-point">
     <div class="demote-point-search b-wrapper">
-        <el-form :inline="true">
-          <div>
-            <el-form-item label="应用组" style="margin-right: 60px">
+      <el-row :gutter="24">
+        <el-form label-position="top" label-width="80px" size="medium">
+          <el-col :span="6">
+            <el-form-item label="应用组">
               <el-select v-model="form.applyGroup" placeholder="">
                 <p v-for="(item, index) in applyGroupData" :key="index">
                   <el-option :label="item" :value="item"></el-option>
                 </p>
               </el-select>
             </el-form-item>
+          </el-col>
+          <el-col :span="6">
             <el-form-item label="应用名称">
               <el-select v-model="form.appName" placeholder="" @change="querystrategygrouptips">
                 <p v-for="(item, index) in appNameData" :key="index">
@@ -17,28 +20,27 @@
                 </p>
               </el-select>
             </el-form-item>
-        </div>
-       <div>
-         <el-form-item label="策略组" style="margin-right: 60px">
-           <el-select v-model="form.strategyGroup" placeholder="">
-             <p v-for="(item, index) in strategyGroupData" :key="index">
-               <el-option :label="item" :value="item"></el-option>
-             </p>
-           </el-select>
-         </el-form-item>
-         <el-form-item label="输入搜索">
-           <el-input v-model="form.demotePoint" placeholder="输入降级点名称搜索" @keyup.enter.native="doSearch"></el-input>
-         </el-form-item>
-         <span class="top-btn-right">
-           <el-form-item>
-             <el-button type="primary" @click="doSearch">查找</el-button>
-           </el-form-item>
-           <el-form-item>
-             <el-button type="primary" @click="addDemotePoint">新增降级点策略</el-button>
-           </el-form-item>
-         </span>
-       </div>
-     </el-form>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="策略组">
+              <el-select v-model="form.strategyGroup" placeholder="">
+                <p v-for="(item, index) in strategyGroupData" :key="index">
+                  <el-option :label="item" :value="item"></el-option>
+                </p>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="输入搜索">
+              <el-input v-model="form.demotePoint" placeholder="输入降级点名称搜索" @keyup.enter.native="doSearch"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div class="search-btn-wrapper">
+        <el-button type="primary" @click="doSearch" icon="el-icon-search">查 找</el-button>
+        <el-button type="primary" @click="addDemotePoint" icon="el-icon-plus">新增降级点策略</el-button>
+      </div>
     </div>
     <div v-if="!!strategygrouptips" class="strategy-group-tips">
       <el-tag type="danger">{{ strategygrouptips }}</el-tag>
@@ -156,7 +158,6 @@
       <div class="application-group-pagination">
         <el-pagination
           background
-          small
           layout="prev, next"
           @current-change="currentChangeData"
           :total="tableData.total"
@@ -582,10 +583,23 @@
 
 <style lang="scss">
   .demote-point {
+    .demote-point-search {
+      .el-row {
+        margin-bottom: 20px;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+      .el-select {
+        width: 100%;
+      }
+      .el-form-item__label {
+        line-height: 1;
+      }
+    }
   }
   .strategy-group-tips {
     color: red;
-    padding-bottom: 10px;
     font-size: 14px;
   }
   .demote-point .top-line {
@@ -923,8 +937,6 @@
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = page * this.tableData.ps
-            } else {
-              this.tableData.total = null
             }
           } else {
             this.$message({
@@ -1089,7 +1101,7 @@
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = this.tableData.data.length
             } else {
-              this.tableData.total = null
+              this.tableData.total = 100
             }
           } else {
             this.$message({

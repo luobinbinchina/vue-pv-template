@@ -1,7 +1,7 @@
 <template>
   <div class="b-wrapper demote-point-response">
     <el-row :gutter="24">
-      <el-form ref="form" :model="searchForm" label-position="top" label-width="80px">
+      <el-form ref="form" :model="searchForm" label-position="top" label-width="80px" size="medium">
           <el-col :span="6">
             <el-form-item label="应用组">
               <el-select v-model="searchForm.region" placeholder="应用组">

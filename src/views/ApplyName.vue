@@ -18,10 +18,10 @@
        </el-form-item> -->
        <div class="top-btn-right">
          <el-form-item>
-           <el-button type="primary" @click="doSearch">查找</el-button>
+           <el-button type="primary" @click="doSearch" icon="el-icon-search">查 找</el-button>
          </el-form-item>
          <el-form-item>
-           <el-button type="primary" @click="addApply">新增应用</el-button>
+           <el-button type="primary" @click="addApply" icon="el-icon-plus">新增应用</el-button>
          </el-form-item>
        </div>
      </el-form>
@@ -469,11 +469,10 @@
               item.modifiedTime = TimeFormat.timeFormat(item.modifiedTime)
             })
             this.tableData.data = res.data
-            console.log('this.tableData.total', this.tableData.total)
-            console.log('this.tableData.ps', this.tableData.ps)
-            console.log('this.tableData.data.length', this.tableData.data.length)
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = this.tableData.data.length
+            } else {
+              this.tableData.total = 100
             }
           } else {
             this.$message({

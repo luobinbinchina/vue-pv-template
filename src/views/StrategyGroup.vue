@@ -1,7 +1,7 @@
 <template>
   <div class="strategy-group">
     <div class="strategy-group-search b-wrapper">
-     <el-form :inline="true">
+     <el-form :inline="true" size="medium">
        <!-- <el-form-item label="应用名称">
          <el-input v-model="form.applyName"  placeholder=""></el-input>
        </el-form-item> -->
@@ -22,15 +22,11 @@
        <el-form-item label="策略组">
          <el-input v-model="strategyGroup" placeholder="" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
-       <div class="top-btn-right">
-         <el-form-item>
-           <el-button type="primary" @click="doSearch">查找</el-button>
-         </el-form-item>
-         <el-form-item>
-           <el-button type="primary" @click="addStrategyGroup">新增策略组</el-button>
-         </el-form-item>
-       </div>
      </el-form>
+      <div class="condition-btn-wrapper">
+        <el-button type="primary" @click="doSearch" icon="el-icon-search">查 找</el-button>
+        <el-button type="primary" @click="addStrategyGroup" icon="el-icon-plus">新增策略组</el-button>
+      </div>
     </div>
     <div class="strategy-group-table b-wrapper">
       <el-table
@@ -231,15 +227,19 @@
 
 <style lang="scss">
   .strategy-group {
+    .condition-btn-wrapper {
+      margin-top: 20px;
+    }
+    .top-line {
+      height: 1px;
+      background: #f6f6f6;
+      margin: 0 -20px;
+    }
+    .strategy-group-table {
+      margin-top: 20px;
+    }
   }
-  .strategy-group .top-line {
-    height: 1px;
-    background: #f6f6f6;
-    margin: 0 -20px;
-  }
-  .strategy-group .strategy-group-table {
-    margin-top: 20px;
-  }
+  
   .application-group-pagination {
     text-align: center;
     margin-top: 20px;
@@ -531,8 +531,6 @@
             this.tableData.data = res.data
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = page * this.tableData.ps
-            } else {
-              this.tableData.total = null
             }
           } else {
             this.$message({
@@ -699,7 +697,7 @@
             if (this.tableData.data.length < this.tableData.ps) {
               this.tableData.total = this.tableData.data.length
             } else {
-              this.tableData.total = null
+              this.tableData.total = 100
             }
           } else {
             this.$message({
