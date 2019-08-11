@@ -136,5 +136,8 @@ export default {
   },
   editpointreturnvalue: params => {
     return _fetch.post(apiHost + "/opensds/pointreturnvalue/edit", params);
-  }
+  },
+  deletpointreturnvalue: params => {
+    return _fetch.post(apiHost + "/opensds/pointreturnvalue/delete", params);
+  },
 };

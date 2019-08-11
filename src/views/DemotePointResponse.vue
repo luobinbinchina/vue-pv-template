@@ -100,7 +100,7 @@
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.row)">删除</el-button>
+              @click="deletpointreturnvalue(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -408,7 +408,6 @@
         })
       },
       updatePointRes(row) {
-        console.log('row', row)
         this.dialogEditPointResponse = true
         this.editPointResForm = row
         row.status === 1 ? this.editPointResForm.status = '开启' : this.editPointResForm.status = '关闭'
@@ -427,6 +426,7 @@
               type: 'warning'
             })
             this.dialogEditPointResponse = false;
+            this.querypointreturnvalue(1)
           } else {
             this.$message({
               message: res.msg,
@@ -439,7 +439,43 @@
             type: 'warning'
           })
         })
-      }
+      },
+      deletpointreturnvalue(row) {
+        this.$confirm('确定删除该降级点返回值吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          Api.deletpointreturnvalue({
+            appGroupName: row.appGroupName,
+            appName: row.appName,
+            point: row.point
+          }).then((res) => {
+            if(res.code === 200) {
+              this.$message({
+                message: "删除降级点返回值成功",
+                type: 'warning'
+              })
+              this.querypointreturnvalue(1)
+            } else {
+              this.$message({
+                message: res.msg,
+                type: 'warning'
+              })
+            }
+          }).catch((err) => {
+            this.$message({
+              message: "删除降级点返回值失败",
+              type: 'warning'
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
+      },
     }
   }
 </script>
