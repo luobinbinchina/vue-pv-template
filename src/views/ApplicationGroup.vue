@@ -5,12 +5,10 @@
        <el-form-item label="应用组" class="top-btn-left">
          <el-input v-model="applicationGroup" placeholder="请输入关键字进行搜索" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
-       <div class="top-btn-left">
+       <div class="top-btn-right">
          <el-form-item>
            <el-button type="primary" size="medium" icon="el-icon-search" @click="doSearch">查 找</el-button>
          </el-form-item>
-       </div>
-       <div class="top-btn-right">
          <el-form-item>
            <el-button type="primary" size="medium" icon="el-icon-plus" @click="addApplicationGroup">新增应用组</el-button>
          </el-form-item>
@@ -37,14 +35,16 @@
         <el-table-column
           prop="modifiedTime"
           label="更新时间"
+          min-width="100"
           >
         </el-table-column>
         <el-table-column
           prop="createTime"
           label="创建时间"
+          min-width="100"
           >
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作"  min-width="100">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -162,6 +162,7 @@
     }
     .edit-application-group .edit-application-group-btn {
       margin-top: 40px;
+      padding-left: 20px;
     }
     .el-table td {
       padding: 8px 0;
@@ -176,9 +177,6 @@
     .el-dialog__header {
       padding: 20px;
       border-bottom: 1px solid #dcdfe6;
-    }
-    .dialog-footer {
-      padding-left: 80px;
     }
   }
 </style>

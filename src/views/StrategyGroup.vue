@@ -2,25 +2,22 @@
   <div class="strategy-group">
     <div class="strategy-group-search b-wrapper">
      <el-form :inline="true" size="medium">
-       <!-- <el-form-item label="应用名称">
-         <el-input v-model="form.applyName"  placeholder=""></el-input>
-       </el-form-item> -->
        <el-form-item label="应用组">
-         <el-select v-model="applyGroup" placeholder="">
+         <el-select v-model="applyGroup" placeholder="应用组">
            <p v-for="(item, index) in applyGroupData" :key="index">
              <el-option :label="item" :value="item"></el-option>
            </p>
          </el-select>
        </el-form-item>
        <el-form-item label="应用名称">
-         <el-select v-model="applyName" placeholder="">
+         <el-select v-model="applyName" placeholder="应用名称">
            <p v-for="(item, index) in anyApplyData" :key="index">
              <el-option :label="item" :value="item"></el-option>
            </p>
          </el-select>
        </el-form-item>
        <el-form-item label="策略组">
-         <el-input v-model="strategyGroup" placeholder="" @keyup.enter.native="doSearch"></el-input>
+         <el-input v-model="strategyGroup" placeholder="策略组" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
      </el-form>
       <div class="condition-btn-wrapper">
@@ -258,6 +255,9 @@
   }
   .strategy-group-search .top-btn-right {
     float: right;
+  }
+  .strategy-group-search .el-form-item {
+    margin-bottom: 0;
   }
   .el-dialog__header {
     padding: 20px;

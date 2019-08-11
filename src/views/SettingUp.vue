@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="setting-up">
+  <div class="setting-up b-wrapper">
     <Building></Building>
   </div>
 </template>
@@ -16,7 +16,7 @@
 
 <style lang="css">
   .setting-up {
-    background: #eee;
+    background: #ffffff;
   }
   .setting-up .setting-up-img {
     width: 100%;

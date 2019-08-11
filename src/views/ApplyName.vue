@@ -11,7 +11,7 @@
          </el-select>
        </el-form-item>
        <el-form-item label="应用名称">
-         <el-input v-model="form.applyName" @keyup.enter.native="doSearch"></el-input>
+         <el-input v-model="form.applyName" placeholder="应用名称" @keyup.enter.native="doSearch"></el-input>
        </el-form-item>
        <!-- <el-form-item>
          <el-button type="primary" @click="addApplicationGroup">新增应用组</el-button>
@@ -204,6 +204,9 @@
     }
     .apply-name-search .top-btn-right {
       float: right;
+    }
+    .apply-name-search .el-form-item {
+      margin-bottom: 0;
     }
     .el-dialog__header {
       padding: 20px;

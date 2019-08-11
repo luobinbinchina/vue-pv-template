@@ -5,7 +5,7 @@
         <el-form label-position="top" label-width="80px" size="medium">
           <el-col :span="6">
             <el-form-item label="应用组">
-              <el-select v-model="form.applyGroup" placeholder="">
+              <el-select v-model="form.applyGroup" placeholder="应用组">
                 <p v-for="(item, index) in applyGroupData" :key="index">
                   <el-option :label="item" :value="item"></el-option>
                 </p>
@@ -14,7 +14,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="应用名称">
-              <el-select v-model="form.appName" placeholder="" @change="querystrategygrouptips">
+              <el-select v-model="form.appName" placeholder="应用名称" @change="querystrategygrouptips">
                 <p v-for="(item, index) in appNameData" :key="index">
                   <el-option :label="item" :value="item"></el-option>
                 </p>
@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="策略组">
-              <el-select v-model="form.strategyGroup" placeholder="">
+              <el-select v-model="form.strategyGroup" placeholder="策略组">
                 <p v-for="(item, index) in strategyGroupData" :key="index">
                   <el-option :label="item" :value="item"></el-option>
                 </p>
@@ -596,6 +596,12 @@
       .el-form-item__label {
         line-height: 1;
       }
+      .el-form-item {
+        margin-bottom: 0;
+      }
+    }
+    .demote-point-table .el-form--inline .el-form-item__content {
+      width: 50px;
     }
   }
   .strategy-group-tips {

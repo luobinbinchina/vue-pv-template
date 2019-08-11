@@ -125,5 +125,16 @@ export default {
   // 查询
   querypointreturnvalue: params => {
     return _fetch.post(apiHost + "/opensds/pointreturnvalue/listpage", params);
+  },
+  // /opensds/pointreturnvalue/add
+  addpointreturnvalue: params => {
+    return _fetch.post(apiHost + "/opensds/pointreturnvalue/add", params);
+  },
+  // /opensds/pointdict/querylist
+  queryPointDictlist: params => {
+    return _fetch.post(apiHost + "/opensds/pointdict/querylist", params);
+  },
+  editpointreturnvalue: params => {
+    return _fetch.post(apiHost + "/opensds/pointreturnvalue/edit", params);
   }
 };
